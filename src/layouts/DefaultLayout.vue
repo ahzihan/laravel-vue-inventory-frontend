@@ -7,8 +7,8 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
-                  <!-- main content start -->
-                  
+                    <!-- main content start -->
+
                     <router-view v-slot="{ Component, route }">
                         <transition name="route" mode="out-in">
                             <div :key="route.name">
@@ -24,22 +24,22 @@
 </template>
 
 <script setup>
-    import NavbarView from '@/components/Navbar.vue'
+import NavbarView from '@/components/Navbar.vue'
 </script>
 
 <style>
-.route-enter-from{
+.route-enter-from {
     opacity: 0;
-    transform:  translateY(10px);
+    transform: translateY(10px);
 }
 
 .route-enter-active,
-.route-leave-active{
+.route-leave-active {
     transition: all 0.2s ease-out;
 }
 
-.route-leave-to{
+.route-leave-to {
     opacity: 0;
-    transform:  translateY(10px);
+    transform: translateY(10px);
 }
 </style>

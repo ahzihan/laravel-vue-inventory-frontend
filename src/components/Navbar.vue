@@ -37,7 +37,7 @@ import ShortDashboard from './ShortDashboard.vue';
                     <i class="fa fa-fw fa-bars"></i>
                 </button>
 
-                <MenuBar/>
+                <MenuBar />
 
             </div>
 
@@ -60,14 +60,14 @@ import ShortDashboard from './ShortDashboard.vue';
                     </div>
                 </div>
 
-                <NotificationBar/>
+                <NotificationBar />
 
-                <Profile/>
+                <Profile />
 
             </div>
         </div>
 
-        <ShortDashboard/>
+        <ShortDashboard />
 
         <!-- start dash troggle-icon -->
         <div>
