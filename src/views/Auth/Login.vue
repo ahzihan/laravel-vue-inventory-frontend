@@ -27,32 +27,33 @@
                                         <h5 class="mb-0">Welcome To Login Page</h5>
                                         <p class="text-muted mt-2">Sign in to continue</p>
                                     </div>
-                                    <form class="mt-4 pt-2">
+
+                                    <vee-form :validation-schema="schema" @submit="login" class="mt-4 pt-2">
                                         <div class="form-floating form-floating-custom mb-3">
-                                            <input type="text" class="form-control" id="input-username"
-                                                placeholder="Enter User Name">
+                                            <vee-field type="email" name="email" v-model="loginForm.email" class="form-control" id="input-username"
+                                                placeholder="Enter User Name" />
                                             <label for="input-username">Username</label>
                                             <div class="form-floating-icon">
                                                 <i class="uil uil-users-alt"></i>
                                             </div>
+                                            <ErrorMessage class="text-danger" name="email" />
                                         </div>
 
                                         <div class="form-floating form-floating-custom mb-3 auth-pass-inputgroup">
-                                            <input type="password" class="form-control" id="password-input"
-                                                placeholder="Enter Password">
+                                            <vee-field type="password" name="password" v-model="loginForm.password" class="form-control" id="password-input"
+                                                placeholder="Enter Password" />
 
                                             <label for="password-input">Password</label>
                                             <div class="form-floating-icon">
                                                 <i class="uil uil-padlock"></i>
                                             </div>
+                                            <ErrorMessage class="text-danger" name="password" />
                                         </div>
 
                                         <div class="form-check form-check-primary font-size-16 py-1">
-                                            <input class="form-check-input" type="checkbox" id="remember-check">
+                                            <vee-field class="form-check-input" type="checkbox" id="remember-check" name="remember" value="true"/>
                                             <div class="float-end">
-                                                <a href="auth-resetpassword-basic.html"
-                                                    class="text-muted text-decoration-underline font-size-14">Forgot
-                                                    your password?</a>
+                                                <a href="" class="text-muted text-decoration-underline font-size-14">Forgot your password?</a>
                                             </div>
                                             <label class="form-check-label font-size-14" for="remember-check">
                                                 Remember me
@@ -65,11 +66,10 @@
 
                                         <div class="mt-4 pt-3 text-center">
                                             <p class="text-muted mb-0">Don't have an account ? <a
-                                                    href="auth-signup-basic.html"
-                                                    class="fw-semibold text-decoration-underline"> Signup Now </a> </p>
+                                                href="" class="fw-semibold text-decoration-underline"> Signup Now </a> </p>
                                         </div>
 
-                                    </form>
+                                    </vee-form>
                                     <!-- end form -->
                                 </div>
                             </div>
@@ -84,10 +84,12 @@
 <script setup>
 /** All Library Import*/
 import { useAuthStore } from '@/stores/auth';
-import { ref, reactive } from 'vue';
+import { ErrorMessage } from 'vee-validate';
+import { ref, reactive, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 /** All Instanse*/
+const swal = inject('#swal');
 const authStore = useAuthStore();
 const router = useRouter();
 
@@ -98,9 +100,30 @@ const loginForm = reactive({
     password: null,
 });
 
+const schema = reactive({
+    email: 'required|email',
+    password: 'required|min:4|max:25',
+});
+
 /** All Methods*/
 const login = () => {
-
+    authStore.login(loginForm, (status) => {
+        if(status=='success'){
+            swal({
+                icom: 'success',
+                timer: 2000,
+                title: authStore.message
+            });
+            router.push({name: 'dashboard'});
+        }else{
+            swal({
+                icom: 'error',
+                timer: 2000,
+                title: authStore.message
+            });
+            router.push({name: 'login'});
+        }
+    })
 }
 /** All Hooks*/
 
