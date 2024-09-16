@@ -6,16 +6,22 @@ import {
  } from "vee-validate";
 
  import {
-    required, min, max, email, alpha_spaces as alphaSpaces, 
-    min_value as minVal, max_value as maxVal, 
-    confirmed, not_one_of as excluded
+    required, 
+    min, 
+    max, 
+    email, 
+    alpha_spaces as alphaSpaces, 
+    min_value as minVal, 
+    max_value as maxVal, 
+    confirmed, 
+    not_one_of as excluded
  } from '@vee-validate/rules';
 
 
  export default{
     install(app){
         app.component('VeeForm', VeeForm);
-        app.component('Field', VeeField);
+        app.component('VeeField', VeeField);
         app.component('ErrorMessage', ErrorMessage);
 
         defineRule('required', required); 
@@ -27,7 +33,7 @@ import {
         defineRule('min_value', minVal); 
         defineRule('max_value', maxVal); 
         defineRule('password_mismatch', confirmed);
-        defineRule('excluded', required); 
+        defineRule('excluded', excluded); 
 
         configure({
             generateMessage: (ctx) => {

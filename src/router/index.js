@@ -13,7 +13,7 @@ const router = createRouter({
       component: DefaultLayout,
       meta:{requiresAuth: true},
       children: [
-        {path: '/dashboard', name: 'dashboard',component: () => import('@/views/Dashboard.vue')}
+        { path: '/dashboard', name: 'dashboard', component: () => import('@/views/Dashboard.vue')}
       ],
     },
 
@@ -28,6 +28,18 @@ const router = createRouter({
     }
     
   ]
+});
+
+//Middleware
+
+router.beforeEach((to,form,next) => {
+  if(to.meta.requiresAuth && !localStorage.getItem('token')){
+    next({name: 'login'});
+  }else if(to.meta.isGuest && localStorage.getItem('token')){
+    next({name: 'dashboard'})
+  }else{
+    next();
+  }
 })
 
 export default router
