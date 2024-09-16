@@ -11,8 +11,6 @@
                                        <img src="@/assets/images/logo-sm.svg" alt="" height="24"> <span
                                            class="">Inventory</span>
                                    </span>
-                                   <p class="text-muted font-size-15 w-75 mx-auto mt-3 mb-0">User Experience &amp; Interface
-                                       Design Strategy Saas Solution</p>
                                </div>
                            </div>
                        </div>
@@ -106,14 +104,14 @@ const login = () => {
         if(status == 'success'){
             swal({
                 icon: 'success',
-                timer: 1000,
+                timer: 2000,
                 title: authStore.message
             });
             router.push({name: 'dashboard'})
         }else{
             swal({
                 icon: 'error',
-                timer: 1000,
+                timer: 2000,
                 title: authStore.message
             });
             router.push({name: 'login'})
