@@ -32,7 +32,7 @@ export const useCategoryStore = defineStore('category', {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get('/all-category');
-                // console.log(data);
+                console.log(data);
                 this.rawData = data;
                 this.categories = data.data;
                 this.pagination.totalCount = data.metadata?.count;
@@ -52,9 +52,7 @@ export const useCategoryStore = defineStore('category', {
             try {
                 const { data } = await inventoryAxiosClient.get('/categories', {
                     params: {
-                        page: page,
                         per_page: limit,
-                        search: search
                     }
                 });
                 console.log(data);
@@ -77,6 +75,49 @@ export const useCategoryStore = defineStore('category', {
         async getCategoryById(){},
         async storeCategory(){},
         async editCategory(){},
-        async changeStatus(){},
+        async deleteCategory(category_id, callback) {
+            this.is_loading = true;
+            try {
+                const { data } = await inventoryAxiosClient.delete(`/categories/${category_id}`);
+                callback('success');
+                this.swal({
+                    title: "Deleted!",
+                    text: "Category has been deleted.",
+                    icon: "success"
+                });
+                this.is_loading = false;
+            } catch (error) {
+                this.errors = error.response?.data;
+                this.swal({
+                    icon: 'error',
+                    title: 'Something went wrong!',
+                    timer: 1000,
+                    text: this.errors?.message
+                });
+                callback('error');
+                this.is_loading = false;
+            }
+        },
+        async changeStatus(category_id) {
+            this.is_loading = true;
+            try {
+                const { data } = await inventoryAxiosClient.get(`/categories/status/${category_id}`);
+                this.is_loading = false;
+                this.swal({
+                    icon: 'success',
+                    title: 'Status Changed!',
+                    timer: 1000,
+                });
+            } catch (error) {
+                this.is_loading = false;
+                this.errors = error.response?.data;
+                this.swal({
+                    icon: 'error',
+                    title: 'Something went wrong!',
+                    timer: 1000,
+                    text: this.errors?.message
+                });
+            }
+        },
     }
 });
