@@ -29,16 +29,18 @@
                         <div class="dropdown-menu" aria-labelledby="topnav-pages">
 
                             <div class="dropdown">
-                                <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-projects"
+                                <a class="dropdown-item dropdown-toggle arrow-none" href="#" id="topnav-category"
                                     role="button">
-                                    <span data-key="t-projects">Projects</span>
+                                    <span data-key="t-category">Category Management</span>
                                     <div class="arrow-down"></div>
                                 </a>
-                                <div class="dropdown-menu" aria-labelledby="topnav-projects">
-                                    <a href="projects-list.html" class="dropdown-item" data-key="t-p-list">Projects
-                                        List</a>
-                                    <a href="projects-create.html" class="dropdown-item" data-key="t-create-new">Create
-                                        New</a>
+                                <div class="dropdown-menu" aria-labelledby="topnav-category">
+
+                                    <router-link :to="{name: 'category-index'}" class="dropdown-item" data-key="t-p-list">Category
+                                        List</router-link>
+                                    <router-link :to="{name: 'category-create'}" class="dropdown-item" data-key="t-create-new">Create
+                                        New</router-link>
+
                                 </div>
                             </div>
                         </div>
