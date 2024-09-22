@@ -73,7 +73,28 @@ export const useCategoryStore = defineStore('category', {
             }
         },
         async getCategoryById(){},
-        async storeCategory(){},
+        async storeCategory(formData) {
+            this.is_loading = true;
+            try {
+                const { data } = await inventoryAxiosClient.post('/categories', formData);
+                console.log(data);
+                this.swal({
+                    icon: 'success',
+                    title: 'Category Inserted Successfully!',
+                    timer: 1000,
+                });
+                this.is_loading = false;
+            } catch (error) {
+                this.errors = error.response?.data;
+                this.swal({
+                    icon: 'error',
+                    title: 'Something went wrong!',
+                    timer: 1000,
+                    text: this.errors?.message
+                });
+                this.is_loading = false;
+            }
+        },
         async editCategory(){},
         async deleteCategory(category_id, callback) {
             this.is_loading = true;

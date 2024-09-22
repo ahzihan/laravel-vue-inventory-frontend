@@ -24,7 +24,7 @@ app.use(VueSweetAlert2, {
 })
 
 app.mount('#app')
-
+import 'bootstrap';
 import './assets/libs/metismenujs/metismenujs.min';
 import './assets/libs/simplebar/simplebar.min';
 import './assets/libs/feather-icons/feather.min';
