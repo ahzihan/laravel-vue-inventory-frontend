@@ -76,8 +76,8 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h4 class="card-title">Categories</h4>
-                                <router-link :to="{ name: 'category-create' }" class="btn btn-sm btn-primary"><i
+                                <h4 class="card-title fw-bold">Categories</h4>
+                                <router-link :to="{ name: 'category-create' }" class="btn btn-sm btn-primary fw-bold text-white"><i
                                         class="fas fa-plus-circle"></i> Add New</router-link>
                             </div>
                         </div>

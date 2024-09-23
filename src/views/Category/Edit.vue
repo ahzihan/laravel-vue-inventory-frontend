@@ -54,10 +54,10 @@ onMounted(() => {
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between">
-                <h4 class="card-title">Update Category</h4>
+                <h4 class="card-title fw-bold">Update Category</h4>
                 <router-link
                   :to="{ name: 'category-index' }"
-                  class="btn btn-sm btn-primary"
+                  class="btn btn-sm btn-primary fw-bold text-white"
                   ><i class="fas fa-arrow-left"></i> Category List</router-link
                 >
               </div>
@@ -120,7 +120,7 @@ onMounted(() => {
                   <div
                     class="d-flex justify-content-end align-items-center mt-3"
                   >
-                    <button class="btn btn-primary" type="submit">
+                    <button class="btn btn-primary fw-bold text-white" type="submit">
                       Update
                     </button>
                   </div>
