@@ -1,8 +1,9 @@
 <script setup>
 /* All Library Import */
-import { ref, reactive, inject, onMounted } from "vue";
+import { ref, reactive, inject, onMounted, watch } from "vue";
 import { useCategoryStore } from "@/stores/category";
 import { useRouter } from "vue-router";
+import _ from "lodash";
 
 /* All Instance*/
 const categoryStore = useCategoryStore();
@@ -27,7 +28,10 @@ const DeleteCategory = (id, name) => {
     if (result.isConfirmed) {
       categoryStore.deleteCategory(id, (status) => {
         if ((status = "success")) {
-          categoryStore.getCategories(1, 5, "");
+          categoryStore.getCategories(
+            categoryStore.pagination.current_page,
+            categoryStore.dataLimit
+          );
         }
       });
     }
@@ -37,8 +41,22 @@ const DeleteCategory = (id, name) => {
 /* Hooks and Computed Property */
 
 onMounted(() => {
-  categoryStore.getCategories(1, 5, "");
+  categoryStore.getCategories(
+    categoryStore.pagination.current_page,
+    categoryStore.dataLimit
+  );
 });
+
+watch(
+  searchKeyWord,
+  _.debounce((current, previous) => {
+    categoryStore.categories(
+      categoryStore.pagination.current_page,
+      categoryStore.dataLimit,
+      current
+    );
+  }, 500)
+);
 </script>
 
 <template>
@@ -100,7 +118,15 @@ onMounted(() => {
                           v-for="(category, index) in categoryStore.categories"
                           :key="category.id"
                         >
-                          <td>{{ index + 1 }}</td>
+                          <td>
+                            {{
+                              categoryStore.pagination.current_page *
+                                categoryStore.dataLimit -
+                              categoryStore.dataLimit +
+                              index +
+                              1
+                            }}
+                          </td>
                           <td>{{ category.name }}</td>
                           <td>{{ category.code }}</td>
                           <td>{{ category.file }}</td>
@@ -145,6 +171,20 @@ onMounted(() => {
               </div>
             </div>
           </div>
+        </div>
+        <div class="d-flex justify-content-end my-4">
+          <v-pagination
+            v-model="categoryStore.pagination.current_page"
+            :pages="categoryStore.pagination.last_page"
+            :range-size="1"
+            active-color="#776acF"
+            @update:modelValue="
+              categoryStore.getCategories(
+                categoryStore.pagination.current_page,
+                categoryStore.dataLimit
+              )
+            "
+          />
         </div>
       </div>
     </div>

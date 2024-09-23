@@ -15,7 +15,7 @@ export const useCategoryStore = defineStore('category', {
         router: null,
         is_loading: false,
         pagination: {
-            first_page: 1,
+            current_page: 1,
             last_page: 0,
             totalCount: 0
         }
@@ -55,12 +55,12 @@ export const useCategoryStore = defineStore('category', {
                         per_page: limit,
                     }
                 });
-                console.log(data);
+                // console.log(data);
                 this.rawData = data.data;
-                this.categories = data.data.data;
+                this.categories = data.data?.data;
                 this.pagination.current_page = data.data?.current_page;
                 this.pagination.last_page = data.data?.last_page;
-                this.pagination.totalCount = data.data.total;
+                this.pagination.totalCount = data.data?.total;
                 this.is_loading = false;
             } catch (error) {
                 this.is_loading = false;
