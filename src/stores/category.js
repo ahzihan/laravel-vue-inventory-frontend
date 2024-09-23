@@ -17,8 +17,8 @@ export const useCategoryStore = defineStore('category', {
         pagination: {
             current_page: 1,
             last_page: 0,
-            totalCount: 0
-        }
+            totalCount: 0,
+        },
     }),
 
     getters: {
@@ -52,7 +52,9 @@ export const useCategoryStore = defineStore('category', {
             try {
                 const { data } = await inventoryAxiosClient.get('/categories', {
                     params: {
+                        page: page,
                         per_page: limit,
+                        search: search,
                     }
                 });
                 // console.log(data);

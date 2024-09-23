@@ -11,16 +11,16 @@ import './assets/css/app.min.css'
 
 import VeeValidatePlugin from './utils/validation';
 import VueSweetAlert2 from 'vue-sweetalert2';
-import Vpagination from '@hennge/vue3-pagination';
+import VPagination from "@hennge/vue3-pagination";
+import "@hennge/vue3-pagination/dist/vue3-pagination.css";
 import 'sweetalert2/dist/sweetalert2.min.css';
-import '@hennge/vue3-pagination/dist/vue3-pagination.css';
 
 const app = createApp(App);
 
 app.use(createPinia());
 app.use(router);
 app.use(VeeValidatePlugin);
-app.component('v-pagination', Vpagination);
+app.component('v-pagination', VPagination);
 app.use(VueSweetAlert2, {
     confirmButtonColor: '#A95EEA',
     cancelButtonColor: '#FF7674',
