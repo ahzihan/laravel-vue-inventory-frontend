@@ -19,6 +19,12 @@ export const useCategoryStore = defineStore('category', {
             last_page: 0,
             totalCount: 0,
         },
+        editFormData: {
+            name: null,
+            code: null,
+            file: null,
+            _method: 'PUT'
+        }
     }),
 
     getters: {
@@ -74,18 +80,24 @@ export const useCategoryStore = defineStore('category', {
                 });
             }
         },
-        async getCategoryById(){},
+        
         async storeCategory(formData) {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.post('/categories', formData);
-                console.log(data);
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                };
+                const { data } = await inventoryAxiosClient.post('/categories', formData, config);
+
                 this.swal({
                     icon: 'success',
                     title: 'Category Inserted Successfully!',
                     timer: 1000,
                 });
                 this.is_loading = false;
+                this.router.push({ name: 'category-index' });
             } catch (error) {
                 this.errors = error.response?.data;
                 this.swal({
@@ -97,7 +109,52 @@ export const useCategoryStore = defineStore('category', {
                 this.is_loading = false;
             }
         },
-        async editCategory(){},
+
+        async getCategoryById(category_id) {
+            this.is_loading = true;
+            try {
+                const { data } = await inventoryAxiosClient.get(`/categories/${category_id}`);
+                console.log(data.data);
+                this.editFormData.name = data.data?.category_name;
+                this.editFormData.code = data.data?.category_code;
+                this.is_loading = false;
+            } catch (error) {
+                this.is_loading = false;
+                this.errors = error.response?.data;
+                this.swal({
+                    icon: 'error',
+                    title: 'Something went Wrong!',
+                    text: this.errors?.message
+                });
+            }
+        },
+        async updateCategory(formData, category_id) {
+            this.is_loading = true;
+            try {
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    }
+                };
+                const { data } = await inventoryAxiosClient.post(`/categories/${category_id}`,formData,config);
+                this.swal({
+                    icon: 'success',
+                    title: 'Category Updated Successfully!',
+                    timer: 1000,
+                });
+                this.is_loading = false;
+                this.router.push({ name: 'category-index' });
+            } catch (error) {
+                this.errors = error.response?.data;
+                this.swal({
+                    icon: 'error',
+                    title: 'Something went wrong!',
+                    timer: 1000,
+                    text: this.errors?.message
+                });
+                this.is_loading = false;
+            }
+        },
         async deleteCategory(category_id, callback) {
             this.is_loading = true;
             try {

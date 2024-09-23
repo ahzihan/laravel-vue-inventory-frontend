@@ -61,7 +61,7 @@
         searchKeyWord,
         _.debounce((current, previous) => {
             categoryStore.getCategories(categoryStore.pagination.current_page, categoryStore.dataLimit,
-            current);
+                current);
         }, 500)
     )
 </script>
@@ -134,22 +134,14 @@
                                                             <input type="checkbox" class="form-check-input fs-5"
                                                                 role="switch" id="changeStatus"
                                                                 :checked="category.is_active"
-                                                                @change.prevent="
-                                  categoryStore.changeStatus(category.id)
-                                " />
+                                                                @change.prevent="categoryStore.changeStatus(category.id)" />
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <route-link
-                                                            :to="{
-                                                                name: 'category-edit',
-                                                                params: { id: category.id },
-                                                            }"
-                                                            class="btn btn-info btn-sm"><i
-                                                                class="fas fa-edit"></i></route-link>
-                                                        <a @click.prevent="
-                                DeleteCategory(category.id, category.name)
-                              "
+                                                        
+                                                    <router-link :to="{name: 'category-edit',params: { id: category.id }}" class="btn btn-info btn-sm"><i class="fas fa-edit"></i></router-link>
+
+                                                    <a @click.prevent="DeleteCategory(category.id, category.name)"
                                                             class="btn btn-sm btn-danger ms-2"><i
                                                                 class="fas fa-trash"></i></a>
                                                     </td>

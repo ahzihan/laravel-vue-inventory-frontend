@@ -11,7 +11,7 @@ import ShortDashboard from './ShortDashboard.vue';
             <div class="d-flex active">
                 <!-- LOGO -->
                 <div class="navbar-brand-box">
-                    <router-link :to="{name: 'category-index'}" class="logo logo-dark">
+                    <router-link :to="{name: 'dashboard'}" class="logo logo-dark">
                         <span class="logo-sm">
                             <img src="@/assets/images/logo-sm.svg" alt="" height="26">
                         </span>
@@ -21,7 +21,7 @@ import ShortDashboard from './ShortDashboard.vue';
                         </span>
                     </router-link>
 
-                    <router-link :to="{name: 'category-index'}" class="logo logo-light">
+                    <router-link :to="{name: 'dashboard'}" class="logo logo-light">
                         <span class="logo-sm">
                             <img src="@/assets/images/logo-sm.svg" alt="" height="26">
                         </span>
