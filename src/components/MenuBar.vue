@@ -5,11 +5,11 @@
             <div class="collapse navbar-collapse" id="topnav-menu-content">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link dropdown-toggle arrow-none" href="index.html" id="topnav-dashboard"
+                        <router-link :to="{name: 'dashboard'}" class="nav-link dropdown-toggle arrow-none" id="topnav-dashboard"
                             role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="bx bx-home-circle icon"></i>
                             <span data-key="t-dashboard">Dashboard</span>
-                        </a>
+                        </router-link>
                     </li>
 
                     <li class="nav-item dropdown">

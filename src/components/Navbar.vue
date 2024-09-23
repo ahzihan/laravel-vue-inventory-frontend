@@ -8,10 +8,10 @@ import ShortDashboard from './ShortDashboard.vue';
 <template>
     <header id="page-topbar">
         <div class="navbar-header">
-            <div class="d-flex">
+            <div class="d-flex active">
                 <!-- LOGO -->
                 <div class="navbar-brand-box">
-                    <a href="index.html" class="logo logo-dark">
+                    <router-link :to="{name: 'category-index'}" class="logo logo-dark">
                         <span class="logo-sm">
                             <img src="@/assets/images/logo-sm.svg" alt="" height="26">
                         </span>
@@ -19,9 +19,9 @@ import ShortDashboard from './ShortDashboard.vue';
                             <img src="@/assets/images/logo-sm.svg" alt="" height="26"> <span
                                 class="logo-txt">Inventory</span>
                         </span>
-                    </a>
+                    </router-link>
 
-                    <a href="index.html" class="logo logo-light">
+                    <router-link :to="{name: 'category-index'}" class="logo logo-light">
                         <span class="logo-sm">
                             <img src="@/assets/images/logo-sm.svg" alt="" height="26">
                         </span>
@@ -29,7 +29,7 @@ import ShortDashboard from './ShortDashboard.vue';
                             <img src="@/assets/images/logo-sm.svg" alt="" height="26"> <span
                                 class="logo-txt">Inventory</span>
                         </span>
-                    </a>
+                    </router-link>
                 </div>
 
                 <button type="button" class="btn btn-sm px-3 font-size-16 d-lg-none header-item"
