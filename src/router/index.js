@@ -20,6 +20,10 @@ const router = createRouter({
         { path: '/category/create', name: 'category-create', component: () => import('@/views/Category/Create.vue')},
         { path: '/category/edit/:id', name: 'category-edit', component: () => import('@/views/Category/Edit.vue') },
         
+        /** Brand Route */
+        { path: '/brand', name: 'brand-index', component: () => import('@/views/Brand/Index.vue')},
+        { path: '/brand/create', name: 'brand-create', component: () => import('@/views/Brand/Create.vue')},
+        { path: '/brand/edit/:id', name: 'brand-edit', component: () => import('@/views/Brand/Edit.vue') },
 
       ],
     },
