@@ -25,10 +25,10 @@ const schema = reactive({
 });
 
 /* All Methods */
-const onChange = (e) => {
-  console.log(e.target.files[0]);
-  formData.e.target.files[0];
+const onFileChange = (e) => {
+  formData.file = e.target.files[0];
 };
+
 const saveCategory = () => {
   categoryStore.storeCategory(formData);
 };
@@ -100,7 +100,7 @@ const saveCategory = () => {
                       >
                       <vee-field
                         type="file"
-                        @change="onChange"
+                        @change="onFileChange"
                         name="file"
                         class="form-control"
                         accept="image/*"
@@ -111,7 +111,10 @@ const saveCategory = () => {
                   <div
                     class="d-flex justify-content-end align-items-center mt-3"
                   >
-                    <button class="btn btn-primary fw-bold text-white" type="submit">
+                    <button
+                      class="btn btn-primary fw-bold text-white"
+                      type="submit"
+                    >
                       Submit
                     </button>
                   </div>

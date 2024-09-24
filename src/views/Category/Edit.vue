@@ -27,21 +27,19 @@ const schema = reactive({
 });
 
 /* All Methods */
-const onChange = (e) => {
+const onFileChange = (e) => {
   categoryStore.editFormData.file = e.target.files[0];
 };
 
 const UpdateCategory = () => {
-  categoryStore.updateCategory(categoryStore.editFormData, route.params.id)
+  categoryStore.updateCategory(categoryStore.editFormData, route.params.id);
 };
 
 /* Hooks and Computed Property */
 
 onMounted(() => {
-    categoryStore.getCategoryById(route.params.id);
-})
-
-
+  categoryStore.getCategoryById(route.params.id);
+});
 </script>
 
 <template>
@@ -107,9 +105,17 @@ onMounted(() => {
                       <label for="category-image" class="form-label"
                         >Category Image</label
                       >
+                      <template v-if="categoryStore.editFormData.file != null">
+                        <img
+                          :src="categoryStore.editFormData.file"
+                          alt="cat-img"
+                          class="img-fluid"
+                          style="width: 80px; height: 80px"
+                        />
+                      </template>
                       <vee-field
                         type="file"
-                        @change="onChange"
+                        @change="onFileChange"
                         name="file"
                         class="form-control"
                         accept="image/*"
@@ -120,7 +126,10 @@ onMounted(() => {
                   <div
                     class="d-flex justify-content-end align-items-center mt-3"
                   >
-                    <button class="btn btn-primary fw-bold text-white" type="submit">
+                    <button
+                      class="btn btn-primary fw-bold text-white"
+                      type="submit"
+                    >
                       Update
                     </button>
                   </div>

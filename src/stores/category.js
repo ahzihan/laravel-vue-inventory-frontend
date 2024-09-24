@@ -114,9 +114,10 @@ export const useCategoryStore = defineStore('category', {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get(`/categories/${category_id}`);
-                console.log(data.data);
+                // console.log(data.data);
                 this.editFormData.name = data.data?.category_name;
                 this.editFormData.code = data.data?.category_code;
+                this.editFormData.file = data.data?.category_file;
                 this.is_loading = false;
             } catch (error) {
                 this.is_loading = false;
