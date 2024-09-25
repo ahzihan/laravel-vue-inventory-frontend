@@ -3,14 +3,12 @@
     import {
         ref,
         reactive,
-        inject,
-        onMounted
+        inject
     } from "vue";
     import {
-        useCategoryStore
-    } from "@/stores/category";
+        useSupplierStore
+    } from "@/stores/supplier";
     import {
-        useRoute,
         useRouter
     } from "vue-router";
     import {
@@ -18,13 +16,12 @@
     } from "vee-validate";
 
     /* All Instance*/
-    const categoryStore = useCategoryStore();
+    const supplierStore = useSupplierStore();
     const router = useRouter();
-    const route = useRoute();
     const swal = inject("$swal");
 
-    categoryStore.router = router;
-    categoryStore.swal = swal;
+    supplierStore.router = router;
+    supplierStore.swal = swal;
 
     /* All Variables */
     const formData = reactive({
@@ -35,23 +32,17 @@
 
     const schema = reactive({
         name: "required",
-        code: "required",
     });
 
     /* All Methods */
     const onFileChange = (e) => {
-        categoryStore.editFormData.file = e.target.files[0];
+        formData.file = e.target.files[0];
     };
 
-    const UpdateCategory = () => {
-        categoryStore.updateCategory(categoryStore.editFormData, route.params.id);
+    const saveSupplier = () => {
+        supplierStore.storeSupplier(formData);
     };
-
     /* Hooks and Computed Property */
-
-    onMounted(() => {
-        categoryStore.getCategoryById(route.params.id);
-    });
 </script>
 
 <template>
@@ -64,10 +55,10 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h4 class="card-title fw-bold">Update Category</h4>
-                                <router-link :to="{ name: 'category-index' }"
+                                <h4 class="card-title fw-bold">Add New Supplier</h4>
+                                <router-link :to="{ name: 'supplier-index' }"
                                     class="btn btn-sm btn-primary fw-bold text-white"><i class="fas fa-arrow-left"></i>
-                                    Category List</router-link>
+                                    Supplier List</router-link>
                             </div>
                         </div>
                     </div>
@@ -78,38 +69,26 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <vee-form :validation-schema="schema" @submit="UpdateCategory"
+                                <vee-form :validation-schema="schema" @submit="saveSupplier"
                                     enctype="multipart/form-data">
                                     <div class="row">
                                         <div class="col-md-12 mb-4">
-                                            <label for="category-name" class="form-label">Category Name</label>
+                                            <label for="supplier-name" class="form-label">Supplier Name</label>
                                             <vee-field type="text" name="name" class="form-control"
-                                                v-model="categoryStore.editFormData.name"
-                                                placeholder="Enter Category Name" />
+                                                v-model="formData.name" placeholder="Enter Supplier Name" />
                                             <ErrorMessage class="text-danger" name="name" />
-                                        </div>
-                                        <div class="col-md-12 mb-4">
-                                            <label for="category-code" class="form-label">Category Code</label>
-                                            <vee-field type="text" name="code" class="form-control"
-                                                v-model="categoryStore.editFormData.code"
-                                                placeholder="Enter Category code" />
-                                            <ErrorMessage class="text-danger" name="code" />
                                         </div>
 
                                         <div class="col-md-12 mb-4">
-                                            <label for="category-image" class="form-label">Category Image</label>
-                                            <template v-if="categoryStore.editFormData.file != null">
-                                                <img :src="categoryStore.editFormData.file" alt="cat-img"
-                                                    class="img-fluid" style="width: 80px; height: 80px" />
-                                            </template>
-                                            <vee-field type="file" @change="onFileChange" name="file"
+                                            <label for="supplier-image" class="form-label">Supplier Image</label>
+                                            <vee-field type="file" @change="onFileChange" name="image"
                                                 class="form-control" accept="image/*" />
-                                            <ErrorMessage class="text-danger" name="file" />
+                                            <ErrorMessage class="text-danger" name="image" />
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-end align-items-center mt-3">
                                         <button class="btn btn-primary fw-bold text-white" type="submit">
-                                            Update
+                                            Submit
                                         </button>
                                     </div>
                                 </vee-form>

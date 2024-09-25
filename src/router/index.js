@@ -25,6 +25,11 @@ const router = createRouter({
         { path: '/brand/create', name: 'brand-create', component: () => import('@/views/Brand/Create.vue')},
         { path: '/brand/edit/:id', name: 'brand-edit', component: () => import('@/views/Brand/Edit.vue') },
 
+        /** Brand Route */
+        { path: '/supplier', name: 'supplier-index', component: () => import('@/views/Supplier/Index.vue')},
+        { path: '/supplier/create', name: 'supplier-create', component: () => import('@/views/Supplier/Create.vue')},
+        { path: '/supplier/edit/:id', name: 'supplier-edit', component: () => import('@/views/Supplier/Edit.vue') },
+
       ],
     },
 
