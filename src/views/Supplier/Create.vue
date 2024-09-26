@@ -143,6 +143,20 @@ const saveSupplier = () => {
                     </div>
 
                     <div class="col-md-6 mb-4">
+                      <label for="supplier-image" class="form-label"
+                        >Supplier Image</label
+                      >
+                      <vee-field
+                        type="file"
+                        @change="onFileChange"
+                        name="image"
+                        class="form-control"
+                        accept="image/*"
+                      />
+                      <ErrorMessage class="text-danger" name="image" />
+                    </div>
+
+                    <div class="col-md-12 mb-4">
                       <label for="supplier-address" class="form-label"
                         >Address</label
                       >
@@ -156,33 +170,6 @@ const saveSupplier = () => {
                       <ErrorMessage class="text-danger" name="address" />
                     </div>
 
-                    <div class="col-md-6 mb-4">
-                      <label for="supplier-password" class="form-label"
-                        >Password</label
-                      >
-                      <vee-field
-                        type="password"
-                        name="password"
-                        class="form-control"
-                        v-model="formData.password"
-                        placeholder="Enter Password"
-                      />
-                      <ErrorMessage class="text-danger" name="password" />
-                    </div>
-
-                    <div class="col-md-6 mb-4">
-                      <label for="supplier-image" class="form-label"
-                        >Supplier Image</label
-                      >
-                      <vee-field
-                        type="file"
-                        @change="onFileChange"
-                        name="image"
-                        class="form-control"
-                        accept="image/*"
-                      />
-                      <ErrorMessage class="text-danger" name="image" />
-                    </div>
                   </div>
                   <div
                     class="d-flex justify-content-end align-items-center mt-3"

@@ -138,20 +138,6 @@ onMounted(() => {
                     </div>
 
                     <div class="col-md-6 mb-4">
-                      <label for="supplier-address" class="form-label"
-                        >Address</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="address"
-                        class="form-control"
-                        v-model="supplierStore.editFormData.address"
-                        placeholder="Enter Address"
-                      />
-                      <ErrorMessage class="text-danger" name="address" />
-                    </div>
-
-                    <div class="col-md-12 mb-4">
                       <label for="supplier-image" class="form-label"
                         >Supplier Image</label
                       >
@@ -172,6 +158,21 @@ onMounted(() => {
                       />
                       <ErrorMessage class="text-danger" name="image" />
                     </div>
+
+                    <div class="col-md-12 mb-4">
+                      <label for="supplier-address" class="form-label"
+                        >Address</label
+                      >
+                      <vee-field
+                        type="text"
+                        name="address"
+                        class="form-control"
+                        v-model="supplierStore.editFormData.address"
+                        placeholder="Enter Address"
+                      />
+                      <ErrorMessage class="text-danger" name="address" />
+                    </div>
+
                   </div>
                   <div
                     class="d-flex justify-content-end align-items-center mt-3"

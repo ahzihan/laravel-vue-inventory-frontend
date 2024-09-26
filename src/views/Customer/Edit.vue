@@ -111,20 +111,6 @@ onMounted(() => {
                     </div>
 
                     <div class="col-md-6 mb-4">
-                      <label for="customer-address" class="form-label"
-                        >Address</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="address"
-                        class="form-control"
-                        v-model="customerStore.editFormData.address"
-                        placeholder="Enter Address"
-                      />
-                      <ErrorMessage class="text-danger" name="address" />
-                    </div>
-
-                    <div class="col-md-12 mb-4">
                       <label for="customer-image" class="form-label"
                         >Customer Image</label
                       >
@@ -144,6 +130,20 @@ onMounted(() => {
                         accept="image/*"
                       />
                       <ErrorMessage class="text-danger" name="image" />
+                    </div>
+
+                    <div class="col-md-12 mb-4">
+                      <label for="customer-address" class="form-label"
+                        >Address</label
+                      >
+                      <vee-field
+                        type="text"
+                        name="address"
+                        class="form-control"
+                        v-model="customerStore.editFormData.address"
+                        placeholder="Enter Address"
+                      />
+                      <ErrorMessage class="text-danger" name="address" />
                     </div>
                   </div>
                   <div

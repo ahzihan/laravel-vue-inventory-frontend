@@ -148,7 +148,7 @@ watch(
                           </td>
                           <td>
                             <template v-if="supplier.image != null">
-                              <a :href="supplier.image">
+                              <a target="_blank" :href="supplier.image">
                                 <i class="fas fa-download"></i>
                               </a>
                             </template>

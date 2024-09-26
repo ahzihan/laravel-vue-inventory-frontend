@@ -113,6 +113,20 @@ const saveCustomer = () => {
                     </div>
 
                     <div class="col-md-6 mb-4">
+                      <label for="customer-image" class="form-label"
+                        >Customer Image</label
+                      >
+                      <vee-field
+                        type="file"
+                        @change="onFileChange"
+                        name="image"
+                        class="form-control"
+                        accept="image/*"
+                      />
+                      <ErrorMessage class="text-danger" name="image" />
+                    </div>
+
+                    <div class="col-md-12 mb-4">
                       <label for="customer-address" class="form-label"
                         >Address</label
                       >
@@ -126,19 +140,6 @@ const saveCustomer = () => {
                       <ErrorMessage class="text-danger" name="address" />
                     </div>
 
-                    <div class="col-md-6 mb-4">
-                      <label for="customer-image" class="form-label"
-                        >Customer Image</label
-                      >
-                      <vee-field
-                        type="file"
-                        @change="onFileChange"
-                        name="image"
-                        class="form-control"
-                        accept="image/*"
-                      />
-                      <ErrorMessage class="text-danger" name="image" />
-                    </div>
                   </div>
                   <div
                     class="d-flex justify-content-end align-items-center mt-3"

@@ -24,7 +24,7 @@ export const useCustomerStore = defineStore('customer', {
             phone: null,
             email: null,
             address: null,
-            file: null,
+            image: null,
             _method: 'PUT'
         }
     }),
@@ -122,7 +122,7 @@ export const useCustomerStore = defineStore('customer', {
                 this.editFormData.phone = data.data?.phone;
                 this.editFormData.email = data.data?.email;
                 this.editFormData.address = data.data?.address;
-                this.editFormData.file = data.data?.file;
+                this.editFormData.image = data.data?.image;
                 this.is_loading = false;
             } catch (error) {
                 this.is_loading = false;

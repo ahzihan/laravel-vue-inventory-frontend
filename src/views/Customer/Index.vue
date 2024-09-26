@@ -133,9 +133,9 @@ watch(
                           <td>{{ customer.phone }}</td>
                           <td>{{ customer.email }}</td>
                           <td>
-                            <template v-if="customer.file != null">
+                            <template v-if="customer.image != null">
                               <img
-                                :src="customer.file"
+                                :src="customer.image"
                                 alt="cat-img"
                                 class="img-fluid"
                                 style="width: 80px; height: 80px"
@@ -143,8 +143,8 @@ watch(
                             </template>
                           </td>
                           <td>
-                            <template v-if="customer.file != null">
-                              <a :href="customer.file">
+                            <template v-if="customer.image != null">
+                              <a target="_blank" :href="customer.image">
                                 <i class="fas fa-download"></i>
                               </a>
                             </template>
