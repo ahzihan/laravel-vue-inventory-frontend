@@ -25,10 +25,15 @@ const router = createRouter({
         { path: '/brand/create', name: 'brand-create', component: () => import('@/views/Brand/Create.vue')},
         { path: '/brand/edit/:id', name: 'brand-edit', component: () => import('@/views/Brand/Edit.vue') },
 
-        /** Brand Route */
+        /** Supplier Route */
         { path: '/supplier', name: 'supplier-index', component: () => import('@/views/Supplier/Index.vue')},
         { path: '/supplier/create', name: 'supplier-create', component: () => import('@/views/Supplier/Create.vue')},
         { path: '/supplier/edit/:id', name: 'supplier-edit', component: () => import('@/views/Supplier/Edit.vue') },
+
+        /** Customer Route */
+        { path: '/customer', name: 'customer-index', component: () => import('@/views/Customer/Index.vue')},
+        { path: '/customer/create', name: 'customer-create', component: () => import('@/views/Customer/Create.vue')},
+        { path: '/customer/edit/:id', name: 'customer-edit', component: () => import('@/views/Customer/Edit.vue') },
 
       ],
     },

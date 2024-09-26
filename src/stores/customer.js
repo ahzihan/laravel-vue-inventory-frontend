@@ -4,12 +4,12 @@ import { inventoryAxiosClient } from "@/utils/systemaxios";
 import { defineStore } from "pinia";
 
 
-export const useSupplierStore = defineStore('supplier', {
+export const useCustomerStore = defineStore('customer', {
     state: () => ({
         rawData: [],
         dataLimit: config.defaultDataLimit || 10,
-        suppliers: [],
-        supplier: null,
+        customers: [],
+        customer: null,
         errors: [],
         swal: null,
         router: null,
@@ -21,13 +21,10 @@ export const useSupplierStore = defineStore('supplier', {
         },
         editFormData: {
             name: null,
-            designation: null,
             phone: null,
             email: null,
-            nid: null,
-            tread_name: null,
             address: null,
-            image: null,
+            file: null,
             _method: 'PUT'
         }
     }),
@@ -39,13 +36,13 @@ export const useSupplierStore = defineStore('supplier', {
     },
 
     actions: {
-        async getAllSuppliers() {
+        async getAllCustomers() {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.get('/all-supplier');
+                const { data } = await inventoryAxiosClient.get('/all-customer');
                 console.log(data);
                 this.rawData = data;
-                this.suppliers = data.data;
+                this.customers = data.data;
                 this.pagination.totalCount = data.metadata?.count;
                 this.is_loading = false;
             } catch (error) {
@@ -58,10 +55,10 @@ export const useSupplierStore = defineStore('supplier', {
                 });
             }
         },
-        async getSuppliers(page=1,limit=this.dataLimit,search="") {
+        async getCustomers(page=1,limit=this.dataLimit,search="") {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.get('/suppliers', {
+                const { data } = await inventoryAxiosClient.get('/customers', {
                     params: {
                         page: page,
                         per_page: limit,
@@ -70,7 +67,7 @@ export const useSupplierStore = defineStore('supplier', {
                 });
                 // console.log(data);
                 this.rawData = data.data;
-                this.suppliers = data.data?.data;
+                this.customers = data.data?.data;
                 this.pagination.current_page = data.data?.current_page;
                 this.pagination.last_page = data.data?.last_page;
                 this.pagination.totalCount = data.data?.total;
@@ -86,7 +83,7 @@ export const useSupplierStore = defineStore('supplier', {
             }
         },
         
-        async storeSupplier(formData) {
+        async storeCustomer(formData) {
             this.is_loading = true;
             try {
                 const config = {
@@ -94,15 +91,15 @@ export const useSupplierStore = defineStore('supplier', {
                         'Content-Type': 'multipart/form-data',
                     }
                 };
-                const { data } = await inventoryAxiosClient.post('/suppliers', formData, config);
+                const { data } = await inventoryAxiosClient.post('/customers', formData, config);
 
                 this.swal({
                     icon: 'success',
-                    title: 'Supplier Inserted Successfully!',
+                    title: 'Customer Inserted Successfully!',
                     timer: 1000,
                 });
                 this.is_loading = false;
-                this.router.push({ name: 'supplier-index' });
+                this.router.push({ name: 'customer-index' });
             } catch (error) {
                 this.errors = error.response?.data;
                 this.swal({
@@ -115,20 +112,17 @@ export const useSupplierStore = defineStore('supplier', {
             }
         },
 
-        async getSupplierById(supplier_id) {
+        async getCustomerById(id) {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.get(`/suppliers/${supplier_id}`);
+                const { data } = await inventoryAxiosClient.get(`/customers/${id}`);
                 // console.log(data.data);
 
                 this.editFormData.name = data.data?.name;
-                this.editFormData.designation = data.data?.designation;
                 this.editFormData.phone = data.data?.phone;
                 this.editFormData.email = data.data?.email;
-                this.editFormData.nid = data.data?.nid;
-                this.editFormData.tread_name = data.data?.tread_name;
                 this.editFormData.address = data.data?.address;
-                this.editFormData.image = data.data?.image;
+                this.editFormData.file = data.data?.file;
                 this.is_loading = false;
             } catch (error) {
                 this.is_loading = false;
@@ -140,7 +134,7 @@ export const useSupplierStore = defineStore('supplier', {
                 });
             }
         },
-        async updateSupplier(formData, supplier_id) {
+        async updateCustomer(formData, id) {
             this.is_loading = true;
             try {
                 const config = {
@@ -148,14 +142,14 @@ export const useSupplierStore = defineStore('supplier', {
                         'Content-Type': 'multipart/form-data',
                     }
                 };
-                const { data } = await inventoryAxiosClient.post(`/suppliers/${supplier_id}`,formData,config);
+                const { data } = await inventoryAxiosClient.post(`/customers/${id}`,formData,config);
                 this.swal({
                     icon: 'success',
-                    title: 'Supplier Updated Successfully!',
+                    title: 'Customer Updated Successfully!',
                     timer: 1000,
                 });
                 this.is_loading = false;
-                this.router.push({ name: 'supplier-index' });
+                this.router.push({ name: 'customer-index' });
             } catch (error) {
                 this.errors = error.response?.data;
                 this.swal({
@@ -167,14 +161,14 @@ export const useSupplierStore = defineStore('supplier', {
                 this.is_loading = false;
             }
         },
-        async deleteSupplier(supplier_id, callback) {
+        async deleteCustomer(id, callback) {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.delete(`/suppliers/${supplier_id}`);
+                const { data } = await inventoryAxiosClient.delete(`/customers/${id}`);
                 callback('success');
                 this.swal({
                     title: "Deleted!",
-                    text: "Supplier has been deleted.",
+                    text: "Customer has been deleted.",
                     icon: "success"
                 });
                 this.is_loading = false;
@@ -190,10 +184,10 @@ export const useSupplierStore = defineStore('supplier', {
                 this.is_loading = false;
             }
         },
-        async changeStatus(supplier_id) {
+        async changeStatus(id) {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.get(`/suppliers/status/${supplier_id}`);
+                const { data } = await inventoryAxiosClient.get(`/customers/status/${id}`);
                 this.is_loading = false;
                 this.swal({
                     icon: 'success',
