@@ -115,18 +115,24 @@
                 <a
                   class="dropdown-item dropdown-toggle arrow-none"
                   href="#"
-                  id="topnav-map"
+                  id="topnav-staff"
                   role="button"
                 >
-                  <span data-key="t-maps">Employee</span>
+                  <span data-key="t-staff">Staff Management</span>
                   <div class="arrow-down"></div>
                 </a>
-                <div class="dropdown-menu" aria-labelledby="topnav-map">
-                  <a href="#" class="dropdown-item" data-key="t-google"
-                    >Employee List</a
+                <div class="dropdown-menu" aria-labelledby="topnav-staff">
+                  <router-link
+                    :to="{ name: 'staff-index' }"
+                    class="dropdown-item"
+                    data-key="t-p-list"
+                    >Staff List</router-link
                   >
-                  <a href="#" class="dropdown-item" data-key="t-vector"
-                    >Create New</a
+                  <router-link
+                    :to="{ name: 'staff-create' }"
+                    class="dropdown-item"
+                    data-key="t-create-new"
+                    >Create New</router-link
                   >
                 </div>
               </div>

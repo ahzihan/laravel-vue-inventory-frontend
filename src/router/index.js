@@ -35,6 +35,11 @@ const router = createRouter({
         { path: '/customer/create', name: 'customer-create', component: () => import('@/views/Customer/Create.vue')},
         { path: '/customer/edit/:id', name: 'customer-edit', component: () => import('@/views/Customer/Edit.vue') },
 
+        /** Staff Route */
+        { path: '/staff', name: 'staff-index', component: () => import('@/views/Staff/Index.vue')},
+        { path: '/staff/create', name: 'staff-create', component: () => import('@/views/Staff/Create.vue')},
+        { path: '/staff/edit/:id', name: 'staff-edit', component: () => import('@/views/Staff/Edit.vue') },
+
       ],
     },
 
