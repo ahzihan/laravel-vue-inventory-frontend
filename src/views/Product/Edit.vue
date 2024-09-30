@@ -1,39 +1,50 @@
 <script setup>
 /* All Library Import */
 import { ref, reactive, inject, onMounted } from "vue";
-import { useStaffStore } from "@/stores/staff";
+import { useProductStore } from "@/stores/product";
 import { useRoute, useRouter } from "vue-router";
 import { ErrorMessage } from "vee-validate";
+import { useBrandStore } from "@/stores/brand";
+import { useCategoryStore } from "@/stores/category";
+import { useSupplierStore } from "@/stores/supplier";
 
 /* All Instance*/
-const staffStore = useStaffStore();
+const productStore = useProductStore();
+const categoryStore = useCategoryStore();
+const brandStore = useBrandStore();
+const supplierStore = useSupplierStore();
 const router = useRouter();
 const route = useRoute();
 const swal = inject("$swal");
 
-staffStore.router = router;
-staffStore.swal = swal;
+productStore.router = router;
+productStore.swal = swal;
 
 /* All Variables */
 const schema = reactive({
   name: "required",
-  phone: "required",
-  nid: "required",
+  cat_id: "required",
+  brand_id: "required",
+  supplier_id: "required",
+  code: "required|min:4|max:25",
+  original_price: "required|min:1|max:10|min_value:0",
+  sale_price: "required|min:1|max:10|min_value:0",
+  stock: "required|min_value:1|min:1",
 });
 
 /* All Methods */
 const onFileChange = (e) => {
-  staffStore.editFormData.file = e.target.files[0];
+  productStore.editFormData.file = e.target.files[0];
 };
 
-const UpdateStaff = () => {
-  staffStore.updateStaff(staffStore.editFormData, route.params.id);
+const UpdateProduct = () => {
+  productStore.updateProduct(productStore.editFormData, route.params.id);
 };
 
 /* Hooks and Computed Property */
 
 onMounted(() => {
-  staffStore.getStaffById(route.params.id);
+  productStore.getProductById(route.params.id);
 });
 </script>
 
@@ -47,11 +58,11 @@ onMounted(() => {
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between">
-                <h4 class="card-title fw-bold">Update Staff</h4>
+                <h4 class="card-title fw-bold">Update Product</h4>
                 <router-link
-                  :to="{ name: 'staff-index' }"
+                  :to="{ name: 'product-index' }"
                   class="btn btn-sm btn-primary fw-bold text-white"
-                  ><i class="fas fa-arrow-left"></i> Staff List</router-link
+                  ><i class="fas fa-arrow-left"></i> Product List</router-link
                 >
               </div>
             </div>
@@ -65,114 +76,177 @@ onMounted(() => {
               <div class="row">
                 <vee-form
                   :validation-schema="schema"
-                  @submit="UpdateStaff"
+                  @submit="UpdateProduct"
                   enctype="multipart/form-data"
                 >
                   <div class="row">
-                    <div class="col-md-6 mb-4">
-                      <label for="staff-name" class="form-label"
-                        >Staff Name</label
+                    <div class="col-md-4 mb-4">
+                      <label for="product-name" class="form-label"
+                        >Product Name</label
                       >
                       <vee-field
                         type="text"
                         name="name"
                         class="form-control"
-                        v-model="staffStore.editFormData.name"
-                        placeholder="Enter staff Name"
+                        v-model="productStore.editFormData.name"
+                        placeholder="Enter Product Name"
                       />
                       <ErrorMessage class="text-danger" name="name" />
                     </div>
 
-                    <div class="col-md-6 mb-4">
-                      <label for="staff-designation" class="form-label"
-                        >Designation</label
+                    <div class="col-md-4 mb-4">
+                      <label for="product-code" class="form-label"
+                        >Product Code</label
                       >
                       <vee-field
                         type="text"
-                        name="designation"
+                        name="code"
                         class="form-control"
-                        v-model="staffStore.editFormData.designation"
-                        placeholder="Enter staff designation"
+                        v-model="productStore.editFormData.code"
+                        placeholder="Enter Product Code"
                       />
-                      <ErrorMessage class="text-danger" name="designation" />
+                      <ErrorMessage class="text-danger" name="code" />
                     </div>
 
-                    <div class="col-md-6 mb-4">
-                      <label for="staff-phone" class="form-label"
-                        >Phone Number</label
+                    <div class="col-md-4 mb-4">
+                      <label for="category-name" class="form-label"
+                        >Category Name</label
+                      >
+                      <vee-field
+                        as="select"
+                        name="cat_id"
+                        class="form-select"
+                        v-model="productStore.editFormData.cat_id"
+                      >
+                        <option value="">Select Category</option>
+                        <option
+                          :value="category.category_id"
+                          v-for="(category, index) in categoryStore.categories"
+                          :key="category.category_id"
+                        >
+                          {{ index + 1 }} . {{ category.category_name }}
+                        </option>
+                      </vee-field>
+                      <ErrorMessage class="text-danger" name="cat_id" />
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <label for="Brand-name" class="form-label"
+                        >Brand Name</label
+                      >
+                      <vee-field
+                        as="select"
+                        class="form-select"
+                        name="brand_id"
+                        v-model="productStore.editFormData.brand_id"
+                      >
+                        <option value="">Select Brand Name</option>
+                        <option
+                          :value="brand.brand_id"
+                          v-for="(brand, index) in brandStore.brands"
+                          :key="brand.brand_id"
+                        >
+                          {{ index + 1 }}. {{ brand.brand_name }}
+                        </option>
+                      </vee-field>
+                      <ErrorMessage class="text-danger" name="brand_id" />
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <label for="supplier-name" class="form-label"
+                        >Supplier Name</label
+                      >
+                      <vee-field
+                        as="select"
+                        class="form-select"
+                        name="supplier_id"
+                        v-model="productStore.editFormData.supplier_id"
+                      >
+                        <option value="">Select Supplier Name</option>
+                        <option
+                          :value="supplier.id"
+                          v-for="(supplier, index) in supplierStore.suppliers"
+                          :key="supplier.id"
+                        >
+                          {{ index + 1 }}. {{ supplier.name }}
+                        </option>
+                      </vee-field>
+                      <ErrorMessage class="text-danger" name="supplier_id" />
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <label for="original-price" class="form-label"
+                        >Original Price</label
                       >
                       <vee-field
                         type="text"
-                        name="phone"
+                        name="original_price"
                         class="form-control"
-                        v-model="staffStore.editFormData.phone"
-                        placeholder="Enter phone number"
+                        v-model="productStore.editFormData.original_price"
+                        placeholder="Enter Original Price"
+                        min="0"
                       />
-                      <ErrorMessage class="text-danger" name="phone" />
+                      <ErrorMessage class="text-danger" name="original_price" />
                     </div>
 
-                    <div class="col-md-6 mb-4">
-                      <label for="staff-email" class="form-label"
-                        >Email Address</label
-                      >
-                      <vee-field
-                        type="email"
-                        name="email"
-                        class="form-control"
-                        v-model="staffStore.editFormData.email"
-                        placeholder="Enter email address"
-                      />
-                      <ErrorMessage class="text-danger" name="email" />
-                    </div>
-
-                    <div class="col-md-6 mb-4">
-                      <label for="staff-nid" class="form-label"
-                        >NID Number</label
+                    <div class="col-md-4 mb-4">
+                      <label for="sale-price" class="form-label"
+                        >Sale Price</label
                       >
                       <vee-field
                         type="text"
-                        name="nid"
+                        name="sale_price"
                         class="form-control"
-                        v-model="staffStore.editFormData.nid"
-                        placeholder="Enter nid number"
+                        v-model="productStore.editFormData.sale_price"
+                        placeholder="Enter Sale Price"
+                        min="0"
                       />
-                      <ErrorMessage class="text-danger" name="nid" />
+                      <ErrorMessage class="text-danger" name="sale_price" />
                     </div>
 
-                    <div class="col-md-6 mb-4">
-                      <label for="staff-image" class="form-label"
-                        >Staff Image</label
+                    <div class="col-md-4 mb-4">
+                      <label for="stock" class="form-label"
+                        >Product Stock</label
                       >
-                      <template v-if="staffStore.editFormData.file != null">
-                        <img
-                          :src="staffStore.editFormData.file"
-                          alt="cat-img"
-                          class="img-fluid"
-                          style="width: 80px; height: 80px"
-                        />
-                      </template>
+                      <vee-field
+                        type="number"
+                        name="stock"
+                        class="form-control"
+                        v-model="productStore.editFormData.stock"
+                        placeholder="Enter Product Stock"
+                        min="0"
+                      />
+                      <ErrorMessage class="text-danger" name="stock" />
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                      <label for="product-image" class="form-label"
+                        >Product Image</label
+                      >
                       <vee-field
                         type="file"
                         @change="onFileChange"
-                        name="image"
+                        name="file"
                         class="form-control"
                         accept="image/*"
                       />
-                      <ErrorMessage class="text-danger" name="image" />
+                      <ErrorMessage class="text-danger" name="file" />
                     </div>
 
                     <div class="col-md-12 mb-4">
-                      <label for="staff-address" class="form-label"
-                        >Address</label
+                      <label for="product-description" class="form-label"
+                        >Description</label
                       >
-                      <vee-field
-                        type="text"
-                        name="address"
+                      <textarea
+                        name="description"
+                        id="description"
                         class="form-control"
-                        v-model="staffStore.editFormData.address"
-                        placeholder="Enter Address"
-                      />
-                      <ErrorMessage class="text-danger" name="address" />
+                        cols="30"
+                        rows="2"
+                        v-model="productStore.editFormData.description"
+                        placeholder="Enter Product Description"
+                      ></textarea>
+                      <ErrorMessage class="text-danger" name="description" />
                     </div>
                   </div>
                   <div
@@ -182,7 +256,7 @@ onMounted(() => {
                       class="btn btn-primary fw-bold text-white"
                       type="submit"
                     >
-                      Update
+                      Submit
                     </button>
                   </div>
                 </vee-form>
