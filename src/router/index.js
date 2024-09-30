@@ -40,6 +40,11 @@ const router = createRouter({
         { path: '/staff/create', name: 'staff-create', component: () => import('@/views/Staff/Create.vue')},
         { path: '/staff/edit/:id', name: 'staff-edit', component: () => import('@/views/Staff/Edit.vue') },
 
+        /** Product Route */
+        { path: '/product', name: 'product-index', component: () => import('@/views/Product/Index.vue')},
+        { path: '/product/create', name: 'product-create', component: () => import('@/views/Product/Create.vue')},
+        { path: '/product/edit/:id', name: 'product-edit', component: () => import('@/views/Product/Edit.vue') },
+
       ],
     },
 
