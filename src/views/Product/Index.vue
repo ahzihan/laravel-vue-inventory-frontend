@@ -111,6 +111,7 @@ watch(
                           <th>Original Price</th>
                           <th>Sale Price</th>
                           <th>Stock</th>
+                          <th>Unit</th>
                           <th>Image</th>
                           <th>Barcode</th>
                           <th>QRcode</th>
@@ -137,6 +138,7 @@ watch(
                           <td>{{ product.original_price }}</td>
                           <td>{{ product.sale_price }}</td>
                           <td>{{ product.stock }}</td>
+                          <td>{{ product.unit?.unit_name }}</td>
                           <td>
                             <template v-if="product.file != null">
                               <img

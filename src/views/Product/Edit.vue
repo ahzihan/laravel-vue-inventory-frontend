@@ -7,12 +7,15 @@ import { ErrorMessage } from "vee-validate";
 import { useBrandStore } from "@/stores/brand";
 import { useCategoryStore } from "@/stores/category";
 import { useSupplierStore } from "@/stores/supplier";
+import { useUnitStore } from "@/stores/unit";
 
 /* All Instance*/
 const productStore = useProductStore();
 const categoryStore = useCategoryStore();
 const brandStore = useBrandStore();
 const supplierStore = useSupplierStore();
+const unitStore = useUnitStore();
+
 const router = useRouter();
 const route = useRoute();
 const swal = inject("$swal");
@@ -25,6 +28,7 @@ const schema = reactive({
   name: "required",
   cat_id: "required",
   brand_id: "required",
+  unit_id: "required",
   supplier_id: "required",
   code: "required|min:4|max:25",
   original_price: "required|min:1|max:10|min_value:0",
@@ -131,7 +135,7 @@ onMounted(() => {
                     </div>
 
                     <div class="col-md-4 mb-4">
-                      <label for="Brand-name" class="form-label"
+                      <label for="brand-name" class="form-label"
                         >Brand Name</label
                       >
                       <vee-field
@@ -189,7 +193,7 @@ onMounted(() => {
                       <ErrorMessage class="text-danger" name="original_price" />
                     </div>
 
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-3 mb-4">
                       <label for="sale-price" class="form-label"
                         >Sale Price</label
                       >
@@ -204,7 +208,7 @@ onMounted(() => {
                       <ErrorMessage class="text-danger" name="sale_price" />
                     </div>
 
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-3 mb-4">
                       <label for="stock" class="form-label"
                         >Product Stock</label
                       >
@@ -217,6 +221,28 @@ onMounted(() => {
                         min="0"
                       />
                       <ErrorMessage class="text-danger" name="stock" />
+                    </div>
+
+                    <div class="col-md-2 mb-4">
+                      <label for="unit-name" class="form-label"
+                        >Unit Name</label
+                      >
+                      <vee-field
+                        as="select"
+                        name="unit_id"
+                        class="form-select"
+                        v-model="productStore.editFormData.unit_id"
+                      >
+                        <option value="">Select Unit</option>
+                        <option
+                        :value="unit.id"
+                        v-for="(unit, index) in unitStore.units"
+                          :key="unit.id"
+                        >
+                          {{ index + 1 }} . {{ unit.unit_name }}
+                        </option>
+                      </vee-field>
+                      <ErrorMessage class="text-danger" name="unit_id" />
                     </div>
 
                     <div class="col-md-4 mb-4">

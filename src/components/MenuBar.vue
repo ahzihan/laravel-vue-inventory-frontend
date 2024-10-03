@@ -108,6 +108,12 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="topnav-product">
                   <router-link
+                    :to="{ name: 'unit-index' }"
+                    class="dropdown-item"
+                    data-key="t-create-new"
+                    >Unit Setup</router-link
+                  >
+                  <router-link
                     :to="{ name: 'product-index' }"
                     class="dropdown-item"
                     data-key="t-p-list"
@@ -119,6 +125,7 @@
                     data-key="t-create-new"
                     >Create New</router-link
                   >
+                  
                 </div>
               </div>
             </div>

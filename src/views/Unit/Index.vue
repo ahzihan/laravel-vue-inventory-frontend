@@ -1,36 +1,36 @@
 <script setup>
 /* All Library Import */
 import { ref, reactive, inject, onMounted, watch } from "vue";
-import { useSupplierStore } from "@/stores/supplier";
+import { useUnitStore } from "@/stores/unit";
 import { useRouter } from "vue-router";
 import _ from "lodash";
 
 /* All Instance*/
-const supplierStore = useSupplierStore();
+const unitStore = useUnitStore();
 const router = useRouter();
 const swal = inject("$swal");
 
-supplierStore.router = router;
-supplierStore.swal = swal;
+unitStore.router = router;
+unitStore.swal = swal;
 
 /* All Variables */
 const searchKeyWord = ref("");
 
 /* All Methods */
 
-const DeleteSupplier = (id, name) => {
+const DeleteUnit = (id, unit_name) => {
   swal({
-    title: `Are you sure? Do you want to delete this ${name} supplier?`,
+    title: `Are you sure? Do you want to delete this ${unit_name} unit?`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, delete it!",
   }).then((result) => {
     if (result.isConfirmed) {
-      supplierStore.deleteSupplier(id, (status) => {
+      unitStore.deleteUnit(id, (status) => {
         if ((status = "success")) {
-          supplierStore.getSuppliers(
-            supplierStore.pagination.current_page,
-            supplierStore.dataLimit
+          unitStore.getUnits(
+            unitStore.pagination.current_page,
+            unitStore.dataLimit
           );
         }
       });
@@ -41,18 +41,18 @@ const DeleteSupplier = (id, name) => {
 /* Hooks and Computed Property */
 
 onMounted(() => {
-  supplierStore.getSuppliers(
-    supplierStore.pagination.current_page,
-    supplierStore.dataLimit
+  unitStore.getUnits(
+    unitStore.pagination.current_page,
+    unitStore.dataLimit
   );
 });
 
 watch(
   searchKeyWord,
   _.debounce((current, previous) => {
-    supplierStore.getSuppliers(
-      supplierStore.pagination.current_page,
-      supplierStore.dataLimit,
+    unitStore.getUnits(
+      unitStore.pagination.current_page,
+      unitStore.dataLimit,
       current
     );
   }, 500)
@@ -69,9 +69,9 @@ watch(
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between">
-                <h4 class="card-title fw-bold">Suppliers</h4>
+                <h4 class="card-title fw-bold">Units</h4>
                 <router-link
-                  :to="{ name: 'supplier-create' }"
+                  :to="{ name: 'unit-create' }"
                   class="btn btn-sm btn-primary fw-bold text-white"
                   ><i class="fas fa-plus-circle"></i> Add New</router-link
                 >
@@ -87,7 +87,7 @@ watch(
               <div class="row mb-3">
                 <div class="col-md-8">
                   Total Count:
-                  <span class="fw-bold">{{ supplierStore.getTotalCount }}</span>
+                  <span class="fw-bold">{{ unitStore.getTotalCount }}</span>
                 </div>
                 <div class="col-md-4">
                   <input
@@ -106,53 +106,26 @@ watch(
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>Supplier</th>
-                          <th>Phone</th>
-                          <th>Email</th>
-                          <th>NID</th>
-                          <th>Trade Name</th>
-                          <th>Image</th>
-                          <th>Ref</th>
+                          <th>Unit Name</th>
                           <th>Status</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr
-                          v-for="(supplier, index) in supplierStore.suppliers"
-                          :key="supplier.id"
+                          v-for="(unit, index) in unitStore.units"
+                          :key="unit.id"
                         >
                           <td>
                             {{
-                              supplierStore.pagination.current_page *
-                                supplierStore.dataLimit -
-                              supplierStore.dataLimit +
+                              unitStore.pagination.current_page *
+                                unitStore.dataLimit -
+                              unitStore.dataLimit +
                               index +
                               1
                             }}
                           </td>
-                          <td>{{ supplier.name }}</td>
-                          <td>{{ supplier.phone }}</td>
-                          <td>{{ supplier.email }}</td>
-                          <td>{{ supplier.nid }}</td>
-                          <td>{{ supplier.trade_name }}</td>
-                          <td>
-                            <template v-if="supplier.image != null">
-                              <img
-                                :src="supplier.image"
-                                alt="cat-img"
-                                class="img-fluid"
-                                style="width: 80px; height: 80px"
-                              />
-                            </template>
-                          </td>
-                          <td>
-                            <template v-if="supplier.image != null">
-                              <a target="_blank" :href="supplier.image">
-                                <i class="fas fa-download"></i>
-                              </a>
-                            </template>
-                          </td>
+                          <td>{{ unit.unit_name }}</td>
                           <td>
                             <div
                               class="form-check form-switch d-flex justify-content-center"
@@ -162,9 +135,9 @@ watch(
                                 class="form-check-input fs-5"
                                 role="switch"
                                 id="changeStatus"
-                                :checked="supplier.is_active"
+                                :checked="unit.is_active"
                                 @change.prevent="
-                                  supplierStore.changeStatus(supplier.id)
+                                  unitStore.changeStatus(unit.id)
                                 "
                               />
                             </div>
@@ -172,8 +145,8 @@ watch(
                           <td>
                             <router-link
                               :to="{
-                                name: 'supplier-edit',
-                                params: { id: supplier.id },
+                                name: 'unit-edit',
+                                params: { id: unit.id },
                               }"
                               class="btn btn-info btn-sm"
                               ><i class="fas fa-edit"></i
@@ -181,7 +154,7 @@ watch(
 
                             <a
                               @click.prevent="
-                                DeleteSupplier(supplier.id, supplier.name)
+                                DeleteUnit(unit.id, unit.unit_name)
                               "
                               class="btn btn-sm btn-danger ms-2"
                               ><i class="fas fa-trash"></i
@@ -198,14 +171,14 @@ watch(
         </div>
         <div class="d-flex justify-content-end">
           <v-pagination
-            v-model="supplierStore.pagination.current_page"
-            :pages="supplierStore.pagination.last_page"
+            v-model="unitStore.pagination.current_page"
+            :pages="unitStore.pagination.last_page"
             :range-size="1"
             active-color="#DCEDFF"
             @update:modelValue="
-              supplierStore.getSuppliers(
-                supplierStore.pagination.current_page,
-                supplierStore.dataLimit
+              unitStore.getCategories(
+                unitStore.pagination.current_page,
+                unitStore.dataLimit
               )
             "
           />
