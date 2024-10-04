@@ -125,7 +125,38 @@
                     data-key="t-create-new"
                     >Create New</router-link
                   >
-                  
+                </div>
+              </div>
+
+              <div class="dropdown">
+                <a
+                  class="dropdown-item dropdown-toggle arrow-none"
+                  href="#"
+                  id="topnav-expense"
+                  role="button"
+                >
+                  <span data-key="t-expense">Expense Management</span>
+                  <div class="arrow-down"></div>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="topnav-expense">
+                  <router-link
+                    :to="{ name: 'expense-category-index' }"
+                    class="dropdown-item"
+                    data-key="t-create-new"
+                    >Expense Category Setup</router-link
+                  >
+                  <router-link
+                    :to="{ name: 'expense-index' }"
+                    class="dropdown-item"
+                    data-key="t-p-list"
+                    >Expense List</router-link
+                  >
+                  <router-link
+                    :to="{ name: 'expense-create' }"
+                    class="dropdown-item"
+                    data-key="t-create-new"
+                    >Create New</router-link
+                  >
                 </div>
               </div>
             </div>

@@ -50,6 +50,16 @@ const router = createRouter({
         { path: '/product/create', name: 'product-create', component: () => import('@/views/Product/Create.vue')},
         { path: '/product/edit/:id', name: 'product-edit', component: () => import('@/views/Product/Edit.vue') },
 
+        /** Expense Category Route */
+        { path: '/expense-categories', name: 'expense-category-index', component: () => import('@/views/ExpCategory/Index.vue')},
+        { path: '/expense-categories/create', name: 'expense-category-create', component: () => import('@/views/ExpCategory/Create.vue')},
+        { path: '/expense-categories/edit/:id', name: 'expense-category-edit', component: () => import('@/views/ExpCategory/Edit.vue') },
+
+        /** Expense Route */
+        { path: '/expense', name: 'expense-index', component: () => import('@/views/Expense/Index.vue')},
+        { path: '/expense/create', name: 'expense-create', component: () => import('@/views/Expense/Create.vue')},
+        { path: '/expense/edit/:id', name: 'expense-edit', component: () => import('@/views/Expense/Edit.vue') },
+
       ],
     },
 
