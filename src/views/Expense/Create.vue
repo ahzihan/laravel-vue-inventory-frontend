@@ -102,7 +102,7 @@ onMounted(() => {
                           {{ index + 1 }} . {{ expCat.name }}
                         </option>
                       </vee-field>
-                      <ErrorMessage class="text-danger" name="cat_id" />
+                      <ErrorMessage class="text-danger" name="exp_cat_id" />
                     </div>
 
                     <div class="col-md-6 mb-4">

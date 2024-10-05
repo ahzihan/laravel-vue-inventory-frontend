@@ -116,7 +116,7 @@ export const useExpenseStore = defineStore('expense', {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get(`/expenses/${id}`);
-                // console.log(data.data);
+                console.log(data.data);
 
                 this.editFormData.exp_cat_id = data.data?.exp_cat_id;
                 this.editFormData.staff_id = data.data?.staff_id;
