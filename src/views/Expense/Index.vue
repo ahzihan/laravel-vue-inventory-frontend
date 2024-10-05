@@ -1,58 +1,38 @@
 <script setup>
 /* All Library Import */
 import { ref, reactive, inject, onMounted, watch } from "vue";
-import { useProductStore } from "@/stores/product";
 import { useRouter } from "vue-router";
 import _ from "lodash";
+import { useExpenseStore } from "@/stores/expense";
 
 /* All Instance*/
-const productStore = useProductStore();
+const expenseStore = useExpenseStore();
 const router = useRouter();
 const swal = inject("$swal");
 
-productStore.router = router;
-productStore.swal = swal;
+expenseStore.router = router;
+expenseStore.swal = swal;
 
 /* All Variables */
 const searchKeyWord = ref("");
 
 /* All Methods */
 
-const DeleteProduct = (id, name) => {
-  swal({
-    title: `Are you sure? Do you want to delete this ${name} product?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      productStore.deleteProduct(id, (status) => {
-        if ((status = "success")) {
-          productStore.getProducts(
-            productStore.pagination.current_page,
-            productStore.dataLimit
-          );
-        }
-      });
-    }
-  });
-};
-
 /* Hooks and Computed Property */
 
 onMounted(() => {
-  productStore.getProducts(
-    productStore.pagination.current_page,
-    productStore.dataLimit
+  expenseStore.getExpenses(
+    expenseStore.pagination.current_page,
+    expenseStore.dataLimit
   );
 });
 
 watch(
   searchKeyWord,
   _.debounce((current, previous) => {
-    productStore.getProducts(
-      productStore.pagination.current_page,
-      productStore.dataLimit,
+    expenseStore.getExpenses(
+      expenseStore.pagination.current_page,
+      expenseStore.dataLimit,
       current
     );
   }, 500)
@@ -69,9 +49,9 @@ watch(
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between">
-                <h4 class="card-title fw-bold">All Products</h4>
+                <h4 class="card-title fw-bold">All Expense</h4>
                 <router-link
-                  :to="{ name: 'product-create' }"
+                  :to="{ name: 'expense-create' }"
                   class="btn btn-sm btn-primary fw-bold text-white"
                   ><i class="fas fa-plus-circle"></i> Add New</router-link
                 >
@@ -87,7 +67,7 @@ watch(
               <div class="row mb-3">
                 <div class="col-md-8">
                   Total Count:
-                  <span class="fw-bold">{{ productStore.getTotalCount }}</span>
+                  <span class="fw-bold">{{ expenseStore.getTotalCount }}</span>
                 </div>
                 <div class="col-md-4">
                   <input
@@ -106,69 +86,44 @@ watch(
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>Name</th>
-                          <th>Code</th>
-                          <th>Original Price</th>
-                          <th>Sale Price</th>
-                          <th>Stock</th>
-                          <th>Unit</th>
-                          <th>Image</th>
-                          <th>Barcode</th>
-                          <th>QRcode</th>
+                          <th>Expense Category</th>
+                          <th>Staff Name</th>
+                          <th>Amount</th>
+                          <th>Note</th>
+                          <th>File</th>
                           <th>Status</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr
-                          v-for="(product, index) in productStore.products"
-                          :key="product.id"
+                          v-for="(expense, index) in expenseStore.expenses"
+                          :key="expense.id"
                         >
                           <td>
                             {{
-                              productStore.pagination.current_page *
-                                productStore.dataLimit -
-                              productStore.dataLimit +
+                              expenseStore.pagination.current_page *
+                                expenseStore.dataLimit -
+                              expenseStore.dataLimit +
                               index +
                               1
                             }}
                           </td>
-                          <td>{{ product.name }}</td>
-                          <td>{{ product.code }}</td>
-                          <td>{{ product.original_price }}</td>
-                          <td>{{ product.sale_price }}</td>
-                          <td>{{ product.stock }}</td>
-                          <td>{{ product.unit?.unit_name }}</td>
+                          <td>{{ expense.exp_category?.name }}</td>
+                          <td>{{ expense.staff?.name }}</td>
+                          <td>{{ expense.amount }}</td>
+                          <td>{{ expense.notes }}</td>
                           <td>
-                            <template v-if="product.file != null">
+                            <template v-if="expense.file != null">
                               <img
-                                :src="product.file"
-                                alt="cat-img"
+                                :src="expense.file"
+                                alt="expense-img"
                                 class="img-fluid"
                                 style="width: 80px; height: 80px"
                               />
                             </template>
                           </td>
-                          <td>
-                            <template v-if="product.barcode != null">
-                              <img
-                                :src="product.barcode"
-                                alt="cat-barcode"
-                                class="img-fluid"
-                                style="width: 80px; height: 80px"
-                              />
-                            </template>
-                          </td>
-                          <td>
-                            <template v-if="product.qrcode != null">
-                              <img
-                                :src="product.qrcode"
-                                alt="cat-qrcode"
-                                class="img-fluid"
-                                style="width: 80px; height: 80px"
-                              />
-                            </template>
-                          </td>
+
                           <td>
                             <div
                               class="form-check form-switch d-flex justify-content-center"
@@ -178,9 +133,9 @@ watch(
                                 class="form-check-input fs-5"
                                 role="switch"
                                 id="changeStatus"
-                                :checked="product.is_active"
+                                :checked="expense.is_active"
                                 @change.prevent="
-                                  productStore.changeStatus(product.id)
+                                  expenseStore.changeStatus(expense.id)
                                 "
                               />
                             </div>
@@ -188,20 +143,12 @@ watch(
                           <td>
                             <router-link
                               :to="{
-                                name: 'product-edit',
-                                params: { id: product.id },
+                                name: 'expense-edit',
+                                params: { id: expense.id },
                               }"
                               class="btn btn-info btn-sm"
                               ><i class="fas fa-edit"></i
                             ></router-link>
-
-                            <a
-                              @click.prevent="
-                                DeleteProduct(product.id, product.name)
-                              "
-                              class="btn btn-sm btn-danger mt-2"
-                              ><i class="fas fa-trash"></i
-                            ></a>
                           </td>
                         </tr>
                       </tbody>
@@ -214,14 +161,14 @@ watch(
         </div>
         <div class="d-flex justify-content-end">
           <v-pagination
-            v-model="productStore.pagination.current_page"
-            :pages="productStore.pagination.last_page"
+            v-model="expenseStore.pagination.current_page"
+            :pages="expenseStore.pagination.last_page"
             :range-size="1"
             active-color="#DCEDFF"
             @update:modelValue="
-              productStore.getProducts(
-                productStore.pagination.current_page,
-                productStore.dataLimit
+              expenseStore.getExpenses(
+                expenseStore.pagination.current_page,
+                expenseStore.dataLimit
               )
             "
           />

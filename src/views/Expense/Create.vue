@@ -1,53 +1,37 @@
 <script setup>
 /* All Library Import */
 import { ref, reactive, inject, onMounted } from "vue";
-import { useProductStore } from "@/stores/product";
 import { useRouter } from "vue-router";
 import { ErrorMessage } from "vee-validate";
-import { useBrandStore } from "@/stores/brand";
-import { useCategoryStore } from "@/stores/category";
-import { useSupplierStore } from "@/stores/supplier";
-import { useUnitStore } from "@/stores/unit";
-
+import { useExpenseStore } from "@/stores/expense";
+import { useExpCategoryStore } from "@/stores/expCategory";
+import { useStaffStore } from "@/stores/staff";
 
 /* All Instance*/
-const productStore = useProductStore();
-const categoryStore = useCategoryStore();
-const brandStore = useBrandStore();
-const supplierStore = useSupplierStore();
-const unitStore = useUnitStore();
+const expenseStore = useExpenseStore();
+const expCategoryStore = useExpCategoryStore();
+const staffStore = useStaffStore();
 
 const router = useRouter();
 const swal = inject("$swal");
 
-productStore.router = router;
-productStore.swal = swal;
+expenseStore.router = router;
+expenseStore.swal = swal;
 
 /* All Variables */
 const formData = reactive({
-  name: "",
-  cat_id: "",
-  brand_id: "",
-  unit_id: "",
-  supplier_id: "",
-  code: "",
-  original_price: 0,
-  sale_price: 0,
-  stock: 1,
-  description: "",
+  exp_cat_id: "",
+  staff_id: "",
+  amount: "",
+  notes: "",
   file: null,
 });
 
 const schema = reactive({
-  name: "required",
-  cat_id: "required",
-  brand_id: "required",
-  supplier_id: "required",
-  unit_id: "required",
-  code: "required|min:4|max:25",
-  original_price: "required|min:1|max:10|min_value:0",
-  sale_price: "required|min:1|max:10|min_value:0",
-  stock: "required|min_value:1|min:1",
+  exp_cat_id: "required",
+  staff_id: "required",
+  amount: "required",
+  notes: "required",
 });
 
 /* All Methods */
@@ -55,15 +39,13 @@ const onFileChange = (e) => {
   formData.file = e.target.files[0];
 };
 
-const saveProduct = () => {
-  productStore.storeProduct(formData);
+const saveExpense = () => {
+  expenseStore.storeExpense(formData);
 };
 /* Hooks and Computed Property */
 onMounted(() => {
-  brandStore.getAllBrands();
-  categoryStore.getAllCategories();
-  supplierStore.getAllSuppliers();
-  unitStore.getAllUnits();
+  expCategoryStore.getAllExpenseCategories();
+  staffStore.getAllStaffs();
 });
 </script>
 
@@ -77,11 +59,11 @@ onMounted(() => {
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between">
-                <h4 class="card-title fw-bold">Add New Product</h4>
+                <h4 class="card-title fw-bold">Add New Expense</h4>
                 <router-link
-                  :to="{ name: 'product-index' }"
+                  :to="{ name: 'expense-index' }"
                   class="btn btn-sm btn-primary fw-bold text-white"
-                  ><i class="fas fa-arrow-left"></i> Product List</router-link
+                  ><i class="fas fa-arrow-left"></i> Expense List</router-link
                 >
               </div>
             </div>
@@ -95,175 +77,71 @@ onMounted(() => {
               <div class="row">
                 <vee-form
                   :validation-schema="schema"
-                  @submit="saveProduct"
+                  @submit="saveExpense"
                   enctype="multipart/form-data"
                 >
                   <div class="row">
-                    <div class="col-md-4 mb-4">
-                      <label for="product-name" class="form-label"
-                        >Product Name</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="name"
-                        class="form-control"
-                        v-model="formData.name"
-                        placeholder="Enter Product Name"
-                      />
-                      <ErrorMessage class="text-danger" name="name" />
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                      <label for="product-code" class="form-label"
-                        >Product Code</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="code"
-                        class="form-control"
-                        v-model="formData.code"
-                        placeholder="Enter Product Code"
-                      />
-                      <ErrorMessage class="text-danger" name="code" />
-                    </div>
-
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-6 mb-4">
                       <label for="category-name" class="form-label"
-                        >Category Name</label
+                        >Expense Category</label
                       >
                       <vee-field
                         as="select"
-                        name="cat_id"
+                        name="exp_cat_id"
                         class="form-select"
-                        v-model="formData.cat_id"
+                        v-model="formData.exp_cat_id"
                       >
                         <option value="">Select Category</option>
                         <option
-                          :value="category.category_id"
-                          v-for="(category, index) in categoryStore.categories"
-                          :key="category.category_id"
+                          v-for="(
+                            expCat, index
+                          ) in expCategoryStore.expCategories"
+                          :key="expCat.id"
+                          :value="expCat.id"
                         >
-                          {{ index + 1 }} . {{ category.category_name }}
+                          {{ index + 1 }} . {{ expCat.name }}
                         </option>
                       </vee-field>
                       <ErrorMessage class="text-danger" name="cat_id" />
                     </div>
 
-                    <div class="col-md-4 mb-4">
-                      <label for="Brand-name" class="form-label"
-                        >Brand Name</label
+                    <div class="col-md-6 mb-4">
+                      <label for="staff-name" class="form-label"
+                        >Staff Name</label
                       >
                       <vee-field
                         as="select"
                         class="form-select"
-                        name="brand_id"
-                        v-model="formData.brand_id"
+                        name="staff_id"
+                        v-model="formData.staff_id"
                       >
-                        <option value="">Select Brand Name</option>
+                        <option value="">Select Staff</option>
                         <option
-                          :value="brand.brand_id"
-                          v-for="(brand, index) in brandStore.brands"
-                          :key="brand.brand_id"
+                          v-for="(staff, index) in staffStore.staffs"
+                          :key="staff.id"
+                          :value="staff.id"
                         >
-                          {{ index + 1 }}. {{ brand.brand_name }}
+                          {{ index + 1 }}. {{ staff.name }}
                         </option>
                       </vee-field>
-                      <ErrorMessage class="text-danger" name="brand_id" />
+                      <ErrorMessage class="text-danger" name="staff_id" />
                     </div>
 
-                    <div class="col-md-4 mb-4">
-                      <label for="supplier-name" class="form-label"
-                        >Supplier Name</label
-                      >
-                      <vee-field
-                        as="select"
-                        class="form-select"
-                        name="supplier_id"
-                        v-model="formData.supplier_id"
-                      >
-                        <option value="">Select Supplier Name</option>
-                        <option
-                          :value="supplier.id"
-                          v-for="(supplier, index) in supplierStore.suppliers"
-                          :key="supplier.id"
-                        >
-                          {{ index + 1 }}. {{ supplier.name }}
-                        </option>
-                      </vee-field>
-                      <ErrorMessage class="text-danger" name="supplier_id" />
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                      <label for="original-price" class="form-label"
-                        >Original Price</label
-                      >
+                    <div class="col-md-6 mb-4">
+                      <label for="amount" class="form-label">Amount</label>
                       <vee-field
                         type="text"
-                        name="original_price"
+                        name="amount"
                         class="form-control"
-                        v-model="formData.original_price"
-                        placeholder="Enter Original Price"
+                        v-model="formData.amount"
+                        placeholder="Enter Amount"
                         min="0"
                       />
-                      <ErrorMessage class="text-danger" name="original_price" />
+                      <ErrorMessage class="text-danger" name="amount" />
                     </div>
 
-                    <div class="col-md-3 mb-4">
-                      <label for="sale-price" class="form-label"
-                        >Sale Price</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="sale_price"
-                        class="form-control"
-                        v-model="formData.sale_price"
-                        placeholder="Enter Sale Price"
-                        min="0"
-                      />
-                      <ErrorMessage class="text-danger" name="sale_price" />
-                    </div>
-
-                    <div class="col-md-3 mb-4">
-                      <label for="stock" class="form-label"
-                        >Product Stock</label
-                      >
-                      <vee-field
-                        type="number"
-                        name="stock"
-                        class="form-control"
-                        v-model="formData.stock"
-                        placeholder="Enter Product Stock"
-                        min="0"
-                      />
-                      <ErrorMessage class="text-danger" name="stock" />
-                    </div>
-
-                    <div class="col-md-2 mb-4">
-                      <label for="unit-name" class="form-label"
-                        >Unit Name</label
-                      >
-                      <vee-field
-                        as="select"
-                        class="form-select"
-                        name="unit_id"
-                        v-model="formData.unit_id"
-                      >
-                        <option value="">Select Unit Name</option>
-                        <option
-                          :value="unit.id"
-                          v-for="(unit, index) in unitStore.units"
-                          :key="unit.id"
-                        >
-                          {{ index + 1 }}. {{ unit.unit_name }}
-                        </option>
-                      </vee-field>
-                      <ErrorMessage class="text-danger" name="unit_id" />
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                      <label for="product-image" class="form-label"
-                        >Product Image</label
-                      >
+                    <div class="col-md-6 mb-4">
+                      <label for="file" class="form-label">File</label>
                       <vee-field
                         type="file"
                         @change="onFileChange"
@@ -275,19 +153,17 @@ onMounted(() => {
                     </div>
 
                     <div class="col-md-12 mb-4">
-                      <label for="product-description" class="form-label"
-                        >Description</label
-                      >
+                      <label for="notes" class="form-label">Notes</label>
                       <textarea
-                        name="description"
-                        id="description"
+                        name="notes"
+                        id="notes"
                         class="form-control"
                         cols="30"
                         rows="2"
-                        v-model="formData.description"
-                        placeholder="Enter Product Description"
+                        v-model="formData.notes"
+                        placeholder="Enter notes"
                       ></textarea>
-                      <ErrorMessage class="text-danger" name="description" />
+                      <ErrorMessage class="text-danger" name="notes" />
                     </div>
                   </div>
                   <div
