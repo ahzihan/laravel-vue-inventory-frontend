@@ -1,36 +1,36 @@
 <script setup>
 /* All Library Import */
 import { ref, reactive, inject, onMounted, watch } from "vue";
-import { useProductStore } from "@/stores/product";
+import { useSalaryStore } from "@/stores/salary";
 import { useRouter } from "vue-router";
 import _ from "lodash";
 
 /* All Instance*/
-const productStore = useProductStore();
+const salaryStore = useSalaryStore();
 const router = useRouter();
 const swal = inject("$swal");
 
-productStore.router = router;
-productStore.swal = swal;
+salaryStore.router = router;
+salaryStore.swal = swal;
 
 /* All Variables */
 const searchKeyWord = ref("");
 
 /* All Methods */
 
-const DeleteProduct = (id, name) => {
+const DeleteSalary = (id, name) => {
   swal({
-    title: `Are you sure? Do you want to delete this ${name} product?`,
+    title: `Are you sure? Do you want to delete this ${name} Salary?`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, delete it!",
   }).then((result) => {
     if (result.isConfirmed) {
-      productStore.deleteProduct(id, (status) => {
+      salaryStore.deleteSalary(id, (status) => {
         if ((status = "success")) {
-          productStore.getProducts(
-            productStore.pagination.current_page,
-            productStore.dataLimit
+          salaryStore.getSalaries(
+            salaryStore.pagination.current_page,
+            salaryStore.dataLimit
           );
         }
       });
@@ -41,18 +41,18 @@ const DeleteProduct = (id, name) => {
 /* Hooks and Computed Property */
 
 onMounted(() => {
-  productStore.getProducts(
-    productStore.pagination.current_page,
-    productStore.dataLimit
+  salaryStore.getSalaries(
+    salaryStore.pagination.current_page,
+    salaryStore.dataLimit
   );
 });
 
 watch(
   searchKeyWord,
   _.debounce((current, previous) => {
-    productStore.getProducts(
-      productStore.pagination.current_page,
-      productStore.dataLimit,
+    salaryStore.getSalaries(
+      salaryStore.pagination.current_page,
+      salaryStore.dataLimit,
       current
     );
   }, 500)
@@ -69,9 +69,9 @@ watch(
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between">
-                <h4 class="card-title fw-bold">All Products</h4>
+                <h4 class="card-title fw-bold">Salary Sheet</h4>
                 <router-link
-                  :to="{ name: 'product-create' }"
+                  :to="{ name: 'salary-create' }"
                   class="btn btn-sm btn-primary fw-bold text-white"
                   ><i class="fas fa-plus-circle"></i> Add New</router-link
                 >
@@ -87,7 +87,7 @@ watch(
               <div class="row mb-3">
                 <div class="col-md-8">
                   Total Count:
-                  <span class="fw-bold">{{ productStore.getTotalCount }}</span>
+                  <span class="fw-bold">{{ salaryStore.getTotalCount }}</span>
                 </div>
                 <div class="col-md-4">
                   <input
@@ -106,90 +106,38 @@ watch(
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>Name</th>
-                          <th>Code</th>
-                          <th>Original Price</th>
-                          <th>Sale Price</th>
-                          <th>Stock</th>
-                          <th>Unit</th>
-                          <th>Image</th>
-                          <th>Barcode</th>
-                          <th>QRcode</th>
-                          <th>Status</th>
+                          <th>Date</th>
+                          <th>Staff Name</th>
+                          <th>Month/Year</th>
+                          <th>Salary Amount</th>
+                          <th>Salary Type</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr
-                          v-for="(product, index) in productStore.products"
-                          :key="product.id"
+                          v-for="(salary, index) in salaryStore.salaries"
+                          :key="salary.id"
                         >
                           <td>
                             {{
-                              productStore.pagination.current_page *
-                                productStore.dataLimit -
-                              productStore.dataLimit +
+                              salaryStore.pagination.current_page *
+                                salaryStore.dataLimit -
+                              salaryStore.dataLimit +
                               index +
                               1
                             }}
                           </td>
-                          <td>{{ product.name }}</td>
-                          <td>{{ product.code }}</td>
-                          <td>{{ product.original_price }}</td>
-                          <td>{{ product.sale_price }}</td>
-                          <td>{{ product.stock }}</td>
-                          <td>{{ product.unit?.unit_name }}</td>
-                          <td>
-                            <template v-if="product.file != null">
-                              <img
-                                :src="product.file"
-                                alt="cat-img"
-                                class="img-fluid"
-                                style="width: 80px; height: 80px"
-                              />
-                            </template>
-                          </td>
-                          <td>
-                            <template v-if="product.barcode != null">
-                              <img
-                                :src="product.barcode"
-                                alt="cat-barcode"
-                                class="img-fluid"
-                                style="width: 80px; height: 80px"
-                              />
-                            </template>
-                          </td>
-                          <td>
-                            <template v-if="product.qrcode != null">
-                              <img
-                                :src="product.qrcode"
-                                alt="cat-qrcode"
-                                class="img-fluid"
-                                style="width: 80px; height: 80px"
-                              />
-                            </template>
-                          </td>
-                          <td>
-                            <div
-                              class="form-check form-switch d-flex justify-content-center"
-                            >
-                              <input
-                                type="checkbox"
-                                class="form-check-input fs-5"
-                                role="switch"
-                                id="changeStatus"
-                                :checked="product.is_active"
-                                @change.prevent="
-                                  productStore.changeStatus(product.id)
-                                "
-                              />
-                            </div>
-                          </td>
+                          <td>{{ salary.date }}</td>
+                          <td>{{ salary.staff?.name }}</td>
+                          <td>{{ salary.month }} - {{ salary.year }}</td>
+                          <td>{{ salary.salary }}</td>
+                          <td>{{ salary.type }}</td>
                           <td>
                             <router-link
                               :to="{
-                                name: 'product-edit',
-                                params: { id: product.id },
+                                name: 'salary-edit',
+                                params: { id: salary.id },
                               }"
                               class="btn btn-info btn-sm"
                               ><i class="fas fa-edit"></i
@@ -197,9 +145,9 @@ watch(
 
                             <a
                               @click.prevent="
-                                DeleteProduct(product.id, product.name)
+                                DeleteSalary(salary.id, salary.staff?.name)
                               "
-                              class="btn btn-sm btn-danger mt-2"
+                              class="btn btn-sm btn-danger ms-2"
                               ><i class="fas fa-trash"></i
                             ></a>
                           </td>
@@ -214,14 +162,14 @@ watch(
         </div>
         <div class="d-flex justify-content-end">
           <v-pagination
-            v-model="productStore.pagination.current_page"
-            :pages="productStore.pagination.last_page"
+            v-model="salaryStore.pagination.current_page"
+            :pages="salaryStore.pagination.last_page"
             :range-size="1"
             active-color="#DCEDFF"
             @update:modelValue="
-              productStore.getProducts(
-                productStore.pagination.current_page,
-                productStore.dataLimit
+              salaryStore.getSalaries(
+                salaryStore.pagination.current_page,
+                salaryStore.dataLimit
               )
             "
           />

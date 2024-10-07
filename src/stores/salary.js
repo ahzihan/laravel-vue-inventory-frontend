@@ -26,7 +26,8 @@ export const useSalaryStore = defineStore('salary', {
             year: '',
             type: '',
             _method: 'PUT'
-        }
+        },
+        salary_types: ['Regular','Advance','Late']
     }),
 
     getters: {

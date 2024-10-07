@@ -1,54 +1,43 @@
 <script setup>
 /* All Library Import */
 import { ref, reactive, inject, onMounted } from "vue";
-import { useProductStore } from "@/stores/product";
 import { useRoute, useRouter } from "vue-router";
 import { ErrorMessage } from "vee-validate";
-import { useBrandStore } from "@/stores/brand";
-import { useCategoryStore } from "@/stores/category";
-import { useSupplierStore } from "@/stores/supplier";
-import { useUnitStore } from "@/stores/unit";
+import { useSalaryStore } from "@/stores/salary";
+import { useStaffStore } from "@/stores/staff";
+import { getMonths, getYears } from "@/helpers/helper";
 
 /* All Instance*/
-const productStore = useProductStore();
-const categoryStore = useCategoryStore();
-const brandStore = useBrandStore();
-const supplierStore = useSupplierStore();
-const unitStore = useUnitStore();
+const salaryStore = useSalaryStore();
+const staffStore = useStaffStore();
 
 const router = useRouter();
 const route = useRoute();
 const swal = inject("$swal");
 
-productStore.router = router;
-productStore.swal = swal;
+salaryStore.router = router;
+salaryStore.swal = swal;
 
 /* All Variables */
 const schema = reactive({
-  name: "required",
-  cat_id: "required",
-  brand_id: "required",
-  unit_id: "required",
-  supplier_id: "required",
-  code: "required|min:4|max:25",
-  original_price: "required|min:1|max:10|min_value:0",
-  sale_price: "required|min:1|max:10|min_value:0",
-  stock: "required|min_value:1|min:1",
+  staff_id: "required",
+  salary: "required|min:1|min_value:0",
+  date: "required",
+  month: "required",
+  year: "required",
+  type: "required",
 });
 
 /* All Methods */
-const onFileChange = (e) => {
-  productStore.editFormData.file = e.target.files[0];
-};
 
-const UpdateProduct = () => {
-  productStore.updateProduct(productStore.editFormData, route.params.id);
+const UpdateSalary = () => {
+  salaryStore.updateSalary(salaryStore.editFormData, route.params.id);
 };
 
 /* Hooks and Computed Property */
 
 onMounted(() => {
-  productStore.getProductById(route.params.id);
+  salaryStore.getSalaryById(route.params.id);
 });
 </script>
 
@@ -62,11 +51,11 @@ onMounted(() => {
           <div class="card">
             <div class="card-body">
               <div class="d-flex align-items-center justify-content-between">
-                <h4 class="card-title fw-bold">Update Product</h4>
+                <h4 class="card-title fw-bold">Update Salary</h4>
                 <router-link
-                  :to="{ name: 'product-index' }"
+                  :to="{ name: 'salary-index' }"
                   class="btn btn-sm btn-primary fw-bold text-white"
-                  ><i class="fas fa-arrow-left"></i> Product List</router-link
+                  ><i class="fas fa-arrow-left"></i> Salary List</router-link
                 >
               </div>
             </div>
@@ -80,200 +69,106 @@ onMounted(() => {
               <div class="row">
                 <vee-form
                   :validation-schema="schema"
-                  @submit="UpdateProduct"
-                  enctype="multipart/form-data"
-                >
+                  @submit="UpdateSalary" >
                   <div class="row">
-                    <div class="col-md-4 mb-4">
-                      <label for="product-name" class="form-label"
-                        >Product Name</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="name"
-                        class="form-control"
-                        v-model="productStore.editFormData.name"
-                        placeholder="Enter Product Name"
-                      />
-                      <ErrorMessage class="text-danger" name="name" />
-                    </div>
 
-                    <div class="col-md-4 mb-4">
-                      <label for="product-code" class="form-label"
-                        >Product Code</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="code"
-                        class="form-control"
-                        v-model="productStore.editFormData.code"
-                        placeholder="Enter Product Code"
-                      />
-                      <ErrorMessage class="text-danger" name="code" />
-                    </div>
-
-                    <div class="col-md-4 mb-4">
-                      <label for="category-name" class="form-label"
-                        >Category Name</label
+                    <div class="col-md-6 mb-4">
+                      <label for="staff-name" class="form-label"
+                        >Staff Name</label
                       >
                       <vee-field
                         as="select"
-                        name="cat_id"
+                        name="staff_id"
                         class="form-select"
-                        v-model="productStore.editFormData.cat_id"
+                        v-model="salaryStore.editFormData.staff_id"
                       >
-                        <option value="">Select Category</option>
+                        <option value="">Select Staff</option>
                         <option
-                          :value="category.category_id"
-                          v-for="(category, index) in categoryStore.categories"
-                          :key="category.category_id"
+                          :value="staff.id"
+                          v-for="(staff, index) in staffStore.staffs"
+                          :key="staff.id"
                         >
-                          {{ index + 1 }} . {{ category.category_name }}
+                          {{ staff.name }}
                         </option>
                       </vee-field>
-                      <ErrorMessage class="text-danger" name="cat_id" />
+                      <ErrorMessage class="text-danger" name="staff_id" />
                     </div>
 
-                    <div class="col-md-4 mb-4">
-                      <label for="brand-name" class="form-label"
-                        >Brand Name</label
-                      >
+                    <div class="col-md-6 mb-4">
+                      <label for="month" class="form-label">Month</label>
                       <vee-field
                         as="select"
+                        name="month"
                         class="form-select"
-                        name="brand_id"
-                        v-model="productStore.editFormData.brand_id"
+                        v-model="salaryStore.editFormData.month"
                       >
-                        <option value="">Select Brand Name</option>
+                        <option value="">Select Month</option>
                         <option
-                          :value="brand.brand_id"
-                          v-for="(brand, index) in brandStore.brands"
-                          :key="brand.brand_id"
+                          :value="month"
+                          v-for="(month, index) in getMonths()"
+                          :key="index"
                         >
-                          {{ index + 1 }}. {{ brand.brand_name }}
+                          {{ index + 1 }} . {{ month }}
                         </option>
                       </vee-field>
-                      <ErrorMessage class="text-danger" name="brand_id" />
+                      <ErrorMessage class="text-danger" name="month" />
                     </div>
 
-                    <div class="col-md-4 mb-4">
-                      <label for="supplier-name" class="form-label"
-                        >Supplier Name</label
-                      >
+                    <div class="col-md-6 mb-4">
+                      <label for="year" class="form-label">Year</label>
                       <vee-field
                         as="select"
+                        name="year"
                         class="form-select"
-                        name="supplier_id"
-                        v-model="productStore.editFormData.supplier_id"
+                        v-model="salaryStore.editFormData.year"
                       >
-                        <option value="">Select Supplier Name</option>
+                        <option value="">Select Year</option>
                         <option
-                          :value="supplier.id"
-                          v-for="(supplier, index) in supplierStore.suppliers"
-                          :key="supplier.id"
+                          :value="year"
+                          v-for="(year, index) in getYears(2010)"
+                          :key="index"
                         >
-                          {{ index + 1 }}. {{ supplier.name }}
+                          {{ year }}
                         </option>
                       </vee-field>
-                      <ErrorMessage class="text-danger" name="supplier_id" />
+                      <ErrorMessage class="text-danger" name="year" />
                     </div>
 
-                    <div class="col-md-4 mb-4">
-                      <label for="original-price" class="form-label"
-                        >Original Price</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="original_price"
-                        class="form-control"
-                        v-model="productStore.editFormData.original_price"
-                        placeholder="Enter Original Price"
-                        min="0"
-                      />
-                      <ErrorMessage class="text-danger" name="original_price" />
-                    </div>
-
-                    <div class="col-md-3 mb-4">
+                    <div class="col-md-6 mb-4">
                       <label for="sale-price" class="form-label"
-                        >Sale Price</label
-                      >
-                      <vee-field
-                        type="text"
-                        name="sale_price"
-                        class="form-control"
-                        v-model="productStore.editFormData.sale_price"
-                        placeholder="Enter Sale Price"
-                        min="0"
-                      />
-                      <ErrorMessage class="text-danger" name="sale_price" />
-                    </div>
-
-                    <div class="col-md-3 mb-4">
-                      <label for="stock" class="form-label"
-                        >Product Stock</label
+                        >Salary Amount</label
                       >
                       <vee-field
                         type="number"
-                        name="stock"
+                        name="salary"
                         class="form-control"
-                        v-model="productStore.editFormData.stock"
-                        placeholder="Enter Product Stock"
+                        v-model="salaryStore.editFormData.salary"
+                        placeholder="Enter Salary.."
                         min="0"
                       />
-                      <ErrorMessage class="text-danger" name="stock" />
+                      <ErrorMessage class="text-danger" name="salary" />
                     </div>
 
-                    <div class="col-md-2 mb-4">
-                      <label for="unit-name" class="form-label"
-                        >Unit Name</label
-                      >
+                    <div class="col-md-6 mb-4">
+                      <label for="type" class="form-label">Type</label>
                       <vee-field
                         as="select"
-                        name="unit_id"
+                        name="type"
                         class="form-select"
-                        v-model="productStore.editFormData.unit_id"
+                        v-model="salaryStore.editFormData.type"
                       >
-                        <option value="">Select Unit</option>
+                        <option value="">Select Type</option>
                         <option
-                        :value="unit.id"
-                        v-for="(unit, index) in unitStore.units"
-                          :key="unit.id"
+                          :value="type"
+                          v-for="(type, index) in salaryStore.salary_types"
+                          :key="index"
                         >
-                          {{ index + 1 }} . {{ unit.unit_name }}
+                          {{ index + 1 }} . {{ type }}
                         </option>
                       </vee-field>
-                      <ErrorMessage class="text-danger" name="unit_id" />
+                      <ErrorMessage class="text-danger" name="type" />
                     </div>
-
-                    <div class="col-md-4 mb-4">
-                      <label for="product-image" class="form-label"
-                        >Product Image</label
-                      >
-                      <vee-field
-                        type="file"
-                        @change="onFileChange"
-                        name="file"
-                        class="form-control"
-                        accept="image/*"
-                      />
-                      <ErrorMessage class="text-danger" name="file" />
-                    </div>
-
-                    <div class="col-md-12 mb-4">
-                      <label for="product-description" class="form-label"
-                        >Description</label
-                      >
-                      <textarea
-                        name="description"
-                        id="description"
-                        class="form-control"
-                        cols="30"
-                        rows="2"
-                        v-model="productStore.editFormData.description"
-                        placeholder="Enter Product Description"
-                      ></textarea>
-                      <ErrorMessage class="text-danger" name="description" />
-                    </div>
+                    
                   </div>
                   <div
                     class="d-flex justify-content-end align-items-center mt-3"

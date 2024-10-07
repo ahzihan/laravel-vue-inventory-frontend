@@ -9,7 +9,6 @@ export const useStaffStore = defineStore('staff', {
         rawData: [],
         dataLimit: config.defaultDataLimit || 10,
         staffs: [],
-        staff: null,
         errors: [],
         swal: null,
         router: null,
