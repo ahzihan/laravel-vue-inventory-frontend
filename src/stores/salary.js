@@ -73,9 +73,9 @@ export const useSalaryStore = defineStore('salary', {
                 const { data } = await inventoryAxiosClient.post('/salary', formData);
 
                 this.swal({
-                    icon: 'success',
-                    title: 'Salary Inserted Successfully!',
-                    timer: 1000,
+                    icon: data.status,
+                    title: data.message,
+                    timer: 2000,
                 });
                 this.is_loading = false;
                 this.router.push({ name: 'salary-index' });
@@ -83,8 +83,7 @@ export const useSalaryStore = defineStore('salary', {
                 this.errors = error.response?.data;
                 this.swal({
                     icon: 'error',
-                    title: 'Something went wrong!',
-                    timer: 1000,
+                    title: errors.message,
                     text: this.errors?.message
                 });
                 this.is_loading = false;
