@@ -61,7 +61,7 @@ export const useProductStore = defineStore('product', {
                 });
             }
         },
-        async getProducts(page=1,limit=this.dataLimit,search="") {
+        async getProducts(page=1,limit=this.dataLimit,search="",filterFormData="") {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get('/products', {
@@ -69,6 +69,8 @@ export const useProductStore = defineStore('product', {
                         page: page,
                         per_page: limit,
                         search: search,
+                        cat_id: filterFormData.cat_id,
+                        brand_id: filterFormData.brand_id,
                     }
                 });
                 // console.log(data);

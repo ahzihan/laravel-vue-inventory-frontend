@@ -19,7 +19,8 @@
           </li>
 
           <li class="nav-item dropdown">
-            <a
+            <router-link
+              :to="{ name: 'pos' }"
               class="nav-link dropdown-toggle arrow-none"
               href="#"
               id="topnav-uielement"
@@ -30,7 +31,7 @@
             >
               <i class="bx bx-cart icon"></i>
               <span data-key="t-elements">POS</span>
-            </a>
+            </router-link>
           </li>
 
           <li class="nav-item dropdown">

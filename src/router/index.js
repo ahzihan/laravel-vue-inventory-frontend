@@ -14,6 +14,9 @@ const router = createRouter({
       meta:{requiresAuth: true},
       children: [
         { path: '/dashboard', name: 'dashboard', component: () => import('@/views/Dashboard.vue') },
+
+        /**POS Route */
+        { path: '/pos', name: 'pos', component: () => import('@/views/POS/Pos.vue') },
         
         /** Category Route */
         { path: '/category', name: 'category-index', component: () => import('@/views/Category/Index.vue')},
