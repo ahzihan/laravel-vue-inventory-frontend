@@ -8,16 +8,23 @@ import { useCategoryStore } from "@/stores/category";
 import { useRouter } from "vue-router";
 import _ from "lodash";
 import { Modal } from "bootstrap";
+import { useCartStore } from "@/stores/cart";
+import { useCustomerStore } from "@/stores/customer";
 
 /* All Instance*/
 const productStore = useProductStore();
 const categoryStore = useCategoryStore();
 const brandStore = useBrandStore();
+const cartStore = useCartStore();
+const customerStore = useCustomerStore();
 const router = useRouter();
 const swal = inject("$swal");
 
 productStore.router = router;
 productStore.swal = swal;
+
+cartStore.swal = swal;
+cartStore.router = router;
 
 /* All Variables */
 const searchKeyWord = ref("");
@@ -29,7 +36,9 @@ const filterFormData = reactive({
 
 const cartFormData = reactive({
   product_id: "",
-  quantity: 0,
+  product_name: "",
+  quantity: 1,
+  price: 0,
   subtotal: 0,
 });
 
@@ -38,9 +47,21 @@ let cartModalObj = null;
 
 /* All Methods */
 const openCartModal = (product) => {
-  console.log(product);
   productStore.product = product;
   cartModalObj.show();
+
+  cartFormData.product_id = product.id;
+  cartFormData.product_name = product.name;
+  cartFormData.price = product.sale_price;
+  cartFormData.subtotal = product.sale_price * cartFormData.quantity;
+};
+
+const resetCartModal = () => {
+  cartFormData.product_id = null;
+  cartFormData.product_name = null;
+  cartFormData.quantity = 1;
+  cartFormData.price = 0;
+  cartFormData.subtotal = 0;
 };
 
 /* Hooks and Computed Property */
@@ -48,8 +69,10 @@ const openCartModal = (product) => {
 onMounted(() => {
   cartModalObj = new Modal(cartModal.value);
   brandStore.getAllBrands();
+  customerStore.getAllCustomers();
   categoryStore.getAllCategories();
-  productStore.getProducts(1, productStore.dataLimit);
+  productStore.getProducts(1, productStore.dataLimit + 2);
+  cartStore.getAllCartItems();
 });
 
 watch(
