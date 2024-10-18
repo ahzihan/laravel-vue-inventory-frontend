@@ -7,6 +7,7 @@ import { useBrandStore } from "@/stores/brand";
 import { useCategoryStore } from "@/stores/category";
 import { useRouter } from "vue-router";
 import _ from "lodash";
+import { Modal } from "bootstrap";
 
 /* All Instance*/
 const productStore = useProductStore();
@@ -26,11 +27,26 @@ const filterFormData = reactive({
   brand_id: "",
 });
 
+const cartFormData = reactive({
+  product_id: "",
+  quantity: 0,
+  subtotal: 0,
+});
+
+let cartModal = ref("");
+let cartModalObj = null;
+
 /* All Methods */
+const openCartModal = (product) => {
+  console.log(product);
+  productStore.product = product;
+  cartModalObj.show();
+};
 
 /* Hooks and Computed Property */
 
 onMounted(() => {
+  cartModalObj = new Modal(cartModal.value);
   brandStore.getAllBrands();
   categoryStore.getAllCategories();
   productStore.getProducts(1, productStore.dataLimit);
@@ -127,7 +143,11 @@ watch(
               v-for="(product, index) in productStore.products"
               :key="product.id"
             >
-              <a href="" class="btn btn-sm">
+              <a
+                href=""
+                class="btn btn-sm"
+                @click.prevent="openCartModal(product)"
+              >
                 <div class="card">
                   <div class="card-content">
                     <img
@@ -153,6 +173,114 @@ watch(
           </div>
         </div>
         <div class="col-md-4">Cart</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Modal -->
+
+  <div
+    class="modal fade"
+    id="addToCartModal"
+    tabindex="-1"
+    aria-labelledby="addToCartModalLabel"
+    aria-hidden="true"
+    ref="cartModal"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addToCartModalLabel">
+            {{ productStore.product?.name }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="card">
+            <div class="card-content">
+              <div class="row">
+                <div class="col-md-4">
+                  <img
+                    :src="productStore.product?.file"
+                    class="card-img-top img-fluid"
+                    alt="product-image"
+                  />
+                </div>
+                <div class="col-md-8">
+                  <div class="row py-2">
+                    <div class="col-md-6">
+                      <label for="original-price" class="form-label"
+                        >Original Price: (BDT)</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        :value="productStore.product?.original_price"
+                        name="original_price"
+                        disabled
+                      />
+                    </div>
+
+                    <div class="col-md-6">
+                      <label for="sale-price" class="form-label"
+                        >Sale Price: (BDT)</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        :value="productStore.product?.sale_price"
+                        name="sale_price"
+                        disabled
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label for="stock" class="form-label"
+                        >Current Stock:</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        :value="productStore.product?.stock"
+                        name="stock"
+                        disabled
+                      />
+                    </div>
+
+                    <div class="col-md-6">
+                      <label for="sale-quantity" class="form-label"
+                        >Sale Quantity:</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        value=""
+                        name="quantity"
+                        v-model="cartFormData.quantity"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
       </div>
     </div>
   </div>
