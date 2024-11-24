@@ -125,7 +125,7 @@ export const useProductStore = defineStore('product', {
             try {
                 const { data } = await inventoryAxiosClient.get(`/products/${id}`);
                 // console.log(data.data);
-
+                this.product = data.data;
                 this.editFormData.name = data.data?.name;
                 this.editFormData.cat_id = data.data?.cat_id;
                 this.editFormData.brand_id = data.data?.brand_id;

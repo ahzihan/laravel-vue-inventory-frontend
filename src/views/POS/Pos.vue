@@ -10,12 +10,14 @@ import _ from "lodash";
 import { Modal } from "bootstrap";
 import { useCartStore } from "@/stores/cart";
 import { useCustomerStore } from "@/stores/customer";
+import { useOrderStore } from "@/stores/order";
 
 /* All Instance*/
 const productStore = useProductStore();
 const categoryStore = useCategoryStore();
 const brandStore = useBrandStore();
 const cartStore = useCartStore();
+const orderStore = useOrderStore();
 const customerStore = useCustomerStore();
 const router = useRouter();
 const swal = inject("$swal");
@@ -26,7 +28,16 @@ productStore.swal = swal;
 cartStore.swal = swal;
 cartStore.router = router;
 
+orderStore.swal = swal;
+orderStore.router = router;
+
 /* All Variables */
+
+let cartModal = ref("");
+let cartModalObj = null;
+let orderModal = ref("");
+let orderModalObj = null;
+
 const searchKeyWord = ref("");
 
 const filterFormData = reactive({
@@ -42,8 +53,15 @@ const cartFormData = reactive({
   subtotal: 0,
 });
 
-let cartModal = ref("");
-let cartModalObj = null;
+const orderFormData = reactive({
+  cus_phone: null,
+  payment_method: "cash",
+  due_amt: 0,
+  pay_amt: 0,
+  subtotal: 0,
+  discount: 0,
+  total: 0,
+});
 
 /* All Methods */
 const openCartModal = (product) => {
@@ -62,6 +80,33 @@ const resetCartModal = () => {
   cartFormData.quantity = 1;
   cartFormData.price = 0;
   cartFormData.subtotal = 0;
+};
+
+const resetOrderModal = () => {
+  orderFormData.cus_phone = null;
+  orderFormData.payment_method = "cash";
+  orderFormData.pay_amt = 0;
+  orderFormData.due_amt = 0;
+  orderFormData.subtotal = 0;
+  orderFormData.discount = 0;
+  orderFormData.total = 0;
+};
+
+const increaseQty = () => {
+  cartFormData.subtotal = cartFormData.price * cartFormData.quantity;
+};
+
+const AddToCart = (cartData) => {
+  console.log(cartData);
+  cartStore.storeCart(cartData);
+  cartModalObj.hide();
+  resetCartModal();
+  cartStore.getAllCartItems();
+};
+
+const RemoveCartItem = (product_id) => {
+  console.log(product_id);
+  cartStore.removeCartItem(product_id);
 };
 
 /* Hooks and Computed Property */
@@ -93,7 +138,7 @@ watch(
   <div class="page-content">
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-7">
           <div class="card">
             <div class="card-header">
               <h4 class="card-title">Product List</h4>
@@ -195,7 +240,52 @@ watch(
             </div>
           </div>
         </div>
-        <div class="col-md-4">Cart</div>
+        <div class="col-md-5">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="card-title">Cart Product List</h4>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="table-responsive">
+                    <table
+                      class="table table-bordered table-striped text-primary"
+                    >
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Code</th>
+                          <th scope="col">Sale Price</th>
+                          <th scope="col">Qty</th>
+                          <th scope="col">Subtotal</th>
+                          <th scope="col"><i class="fas fa-edit"></i></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="(cart, index) in cartStore.carts"
+                          :key="cart.id"
+                        >
+                          <td scope="row">{{ index + 1 }}</td>
+                          <td scope="row">{{ cart.product?.name }}</td>
+                          <td scope="row">{{ cart.product?.code }}</td>
+                          <td scope="row">{{ cart.product?.sale_price }}</td>
+                          <td scope="row">{{ cart.quantity }}</td>
+                          <td scope="row">{{ cart.subtotal }}</td>
+                          <td scope="row">
+                            <a href="" class="btn btn-danger"
+                              ><i class="fas fa-trash"></i
+                            ></a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -237,7 +327,9 @@ watch(
                 <div class="col-md-8">
                   <div class="row py-2">
                     <div class="col-md-6">
-                      <label for="original-price" class="form-label"
+                      <label
+                        for="original-price"
+                        class="form-label text-primary"
                         >Original Price: (BDT)</label
                       >
                       <input
@@ -250,7 +342,7 @@ watch(
                     </div>
 
                     <div class="col-md-6">
-                      <label for="sale-price" class="form-label"
+                      <label for="sale-price" class="form-label text-primary"
                         >Sale Price: (BDT)</label
                       >
                       <input
@@ -264,7 +356,7 @@ watch(
                   </div>
                   <div class="row">
                     <div class="col-md-6">
-                      <label for="stock" class="form-label"
+                      <label for="stock" class="form-label text-primary"
                         >Current Stock:</label
                       >
                       <input
@@ -277,7 +369,7 @@ watch(
                     </div>
 
                     <div class="col-md-6">
-                      <label for="sale-quantity" class="form-label"
+                      <label for="sale-quantity" class="form-label text-primary"
                         >Sale Quantity:</label
                       >
                       <input
@@ -286,6 +378,32 @@ watch(
                         value=""
                         name="quantity"
                         v-model="cartFormData.quantity"
+                        @change="increaseQty()"
+                        min="0"
+                      />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p class="form-label text-primary">BarCode:</p>
+                      <img
+                        :src="productStore.product?.barcode"
+                        class="img-fluid"
+                        alt="product-image"
+                      />
+                    </div>
+
+                    <div class="col-md-6">
+                      <p for="sale-subtotal" class="form-label text-primary">
+                        Subtotal:
+                      </p>
+                      <input
+                        type="number"
+                        class="form-control"
+                        value=""
+                        name="subtotal"
+                        v-model="cartFormData.subtotal"
+                        disabled
                       />
                     </div>
                   </div>
@@ -302,7 +420,14 @@ watch(
           >
             Close
           </button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click.prevent="AddToCart(cartFormData)"
+            :disabled="productStore.product?.stock == 0"
+          >
+            Add To Cart
+          </button>
         </div>
       </div>
     </div>
