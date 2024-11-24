@@ -80,7 +80,7 @@ export const useCartStore = defineStore('cart', {
         async removeCartItem(id) {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.delete(`/remove-cart-item/${id}`);
+                const { data } = await inventoryAxiosClient.get(`/remove-cart-item/${id}`);
                 
                 this.swal({
                     title: "Removed!",
@@ -104,7 +104,7 @@ export const useCartStore = defineStore('cart', {
          async increaseCartItem(id) {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.delete(`/increase-cart-item/${id}`);
+                const { data } = await inventoryAxiosClient.get(`/increase-cart-item/${id}`);
                 
                 this.swal({
                     title: "Increase!",
@@ -128,7 +128,7 @@ export const useCartStore = defineStore('cart', {
           async decreaseCartItem(id) {
             this.is_loading = true;
             try {
-                const { data } = await inventoryAxiosClient.delete(`/decrease-cart-item/${id}`);
+                const { data } = await inventoryAxiosClient.get(`/decrease-cart-item/${id}`);
                 
                 this.swal({
                     title: "Decrease!",

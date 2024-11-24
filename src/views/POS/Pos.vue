@@ -136,151 +136,214 @@ watch(
 
 <template>
   <div class="page-content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-7">
-          <div class="card">
-            <div class="card-header">
-              <h4 class="card-title">Product List</h4>
-              <!-- Filter -->
-              <div class="row mb-3">
-                <div class="col-md-4">
-                  <select
-                    name="cat_id"
-                    class="form-select"
-                    v-model="filterFormData.cat_id"
-                    @change="
-                      productStore.getProducts(
-                        productStore.pagination.current_page,
-                        productStore.dataLimit,
-                        searchKeyWord,
-                        filterFormData
-                      )
-                    "
+    <div class="row">
+      <div class="col-md-7">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title my-3">Product List</h4>
+            <!-- Filter -->
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <select
+                  name="cat_id"
+                  class="form-select"
+                  v-model="filterFormData.cat_id"
+                  @change="
+                    productStore.getProducts(
+                      productStore.pagination.current_page,
+                      productStore.dataLimit,
+                      searchKeyWord,
+                      filterFormData
+                    )
+                  "
+                >
+                  <option value="">Select Category</option>
+                  <option
+                    :value="category.category_id"
+                    v-for="(category, index) in categoryStore.categories"
+                    :key="category.category_id"
                   >
-                    <option value="">Select Category</option>
-                    <option
-                      :value="category.category_id"
-                      v-for="(category, index) in categoryStore.categories"
-                      :key="category.category_id"
-                    >
-                      {{ index + 1 }}. {{ category.category_name }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <select
-                    name="brand_id"
-                    class="form-select"
-                    v-model="filterFormData.brand_id"
-                    @change="
-                      productStore.getProducts(
-                        productStore.pagination.current_page,
-                        productStore.dataLimit,
-                        searchKeyWord,
-                        filterFormData
-                      )
-                    "
+                    {{ index + 1 }}. {{ category.category_name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <select
+                  name="brand_id"
+                  class="form-select"
+                  v-model="filterFormData.brand_id"
+                  @change="
+                    productStore.getProducts(
+                      productStore.pagination.current_page,
+                      productStore.dataLimit,
+                      searchKeyWord,
+                      filterFormData
+                    )
+                  "
+                >
+                  <option value="">Select Brand</option>
+                  <option
+                    :value="brand.brand_id"
+                    v-for="(brand, index) in brandStore.brands"
+                    :key="brand.brand_id"
                   >
-                    <option value="">Select Brand</option>
-                    <option
-                      :value="brand.brand_id"
-                      v-for="(brand, index) in brandStore.brands"
-                      :key="brand.brand_id"
-                    >
-                      {{ index + 1 }}. {{ brand.brand_name }}
-                    </option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <input
-                    type="search"
-                    class="form-control"
-                    v-model="searchKeyWord"
-                    placeholder="Search Product.."
-                  />
-                </div>
+                    {{ index + 1 }}. {{ brand.brand_name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <input
+                  type="search"
+                  class="form-control"
+                  v-model="searchKeyWord"
+                  placeholder="Search Product.."
+                />
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Product List -->
-          <div class="row">
-            <div
-              class="col-md-4"
-              v-for="(product, index) in productStore.products"
-              :key="product.id"
+        <!-- Product List -->
+        <div class="row">
+          <div
+            class="col-md-4"
+            v-for="(product, index) in productStore.products"
+            :key="product.id"
+          >
+            <a
+              href=""
+              class="btn btn-sm"
+              @click.prevent="openCartModal(product)"
             >
-              <a
-                href=""
-                class="btn btn-sm"
-                @click.prevent="openCartModal(product)"
-              >
-                <div class="card">
-                  <div class="card-content">
-                    <img
-                      :src="product.file"
-                      alt="product-image img-fluid"
-                      style="width: 50%; height: 50%"
-                    />
-                    <div class="card-body text-center">
-                      <h4 class="card-title">{{ product.name }}</h4>
-                      <span
-                        class="badge"
-                        :class="product.stock > 0 ? 'bg-success' : 'bg-danger'"
+              <div class="card">
+                <div class="card-content">
+                  <img
+                    :src="product.file"
+                    alt="product-image img-fluid"
+                    style="width: 50%; height: 50%"
+                  />
+                  <div class="card-body text-center">
+                    <h4 class="card-title">{{ product.name }}</h4>
+                    <span
+                      class="badge"
+                      :class="product.stock > 0 ? 'bg-success' : 'bg-danger'"
+                    >
+                      <span v-if="product.stock > 0">Available</span>
+                      <span v-else>Out of Stock</span>
+                      :{{ product.stock }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title my-3">Cart Product List</h4>
+            <div class="row">
+              <!-- Cart Product List -->
+              <div class="col-md-12">
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped">
+                    <thead>
+                      <tr class="bg-primary text-white">
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Code</th>
+                        <th scope="col">Sale Price</th>
+                        <th scope="col" style="width: 120px">Qty</th>
+                        <th scope="col">Subtotal</th>
+                        <th scope="col"><i class="fas fa-edit"></i></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(cart, index) in cartStore.carts"
+                        :key="cart.id"
                       >
-                        <span v-if="product.stock > 0">Available</span>
-                        <span v-else>Out of Stock</span>
-                        :{{ product.stock }}
-                      </span>
+                        <td scope="row">{{ index + 1 }}</td>
+                        <td scope="row">{{ cart.product?.name }}</td>
+                        <td scope="row">{{ cart.product?.code }}</td>
+                        <td scope="row">{{ cart.product?.sale_price }}</td>
+                        <td style="width: 120px">
+                          <span class="btn btn-sm btn-danger fw-bold">
+                            <i
+                              class="fas fa-minus"
+                              @click.prevent="
+                                cartStore.decreaseCartItem(cart.id)
+                              "
+                            ></i>
+                          </span>
+                          {{ cart.quantity }}
+                          <span class="btn btn-sm btn-success fw-bold">
+                            <i
+                              class="fas fa-plus"
+                              @click.prevent="
+                                cartStore.increaseCartItem(cart.id)
+                              "
+                            ></i>
+                          </span>
+                        </td>
+                        <td scope="row">{{ cart.subtotal }}</td>
+                        <td scope="row">
+                          <a
+                            href=""
+                            class="btn btn-sm btn-danger"
+                            @click.prevent="RemoveCartItem(cart.id)"
+                            ><i class="fas fa-trash"></i
+                          ></a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Cart Total -->
+              <div class="col-md-12">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6">SUBTOTAL</div>
+                      <div class="col-md-6 text-end">
+                        {{ cartStore.subtotal }} BDT
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">Discount</div>
+                      <div class="col-md-6 text-end">0 BDT</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">SD Amt.</div>
+                      <div class="col-md-6 text-end">0 BDT</div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">Vat Amt.</div>
+                      <div class="col-md-6 text-end">0 BDT</div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                      <div class="col-md-6 fw-bold">GRAND TOTAL</div>
+                      <div class="col-md-6 text-end text-danger fw-bold">
+                        {{ cartStore.subtotal }} /-BDT
+                      </div>
                     </div>
                   </div>
                 </div>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-5">
-          <div class="card">
-            <div class="card-header">
-              <h4 class="card-title">Cart Product List</h4>
+              </div>
+
+              <!-- Confirm Button -->
               <div class="row">
-                <div class="col-md-12">
-                  <div class="table-responsive">
-                    <table
-                      class="table table-bordered table-striped text-primary"
-                    >
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Name</th>
-                          <th scope="col">Code</th>
-                          <th scope="col">Sale Price</th>
-                          <th scope="col">Qty</th>
-                          <th scope="col">Subtotal</th>
-                          <th scope="col"><i class="fas fa-edit"></i></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          v-for="(cart, index) in cartStore.carts"
-                          :key="cart.id"
-                        >
-                          <td scope="row">{{ index + 1 }}</td>
-                          <td scope="row">{{ cart.product?.name }}</td>
-                          <td scope="row">{{ cart.product?.code }}</td>
-                          <td scope="row">{{ cart.product?.sale_price }}</td>
-                          <td scope="row">{{ cart.quantity }}</td>
-                          <td scope="row">{{ cart.subtotal }}</td>
-                          <td scope="row">
-                            <a href="" class="btn btn-danger"
-                              ><i class="fas fa-trash"></i
-                            ></a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                <div class="d-flex justify-content-center align-items-center">
+                  <button
+                    class="btn btn-primary"
+                    @click.prevent="OpenConfirmOrderModal()"
+                  >
+                    Confirm Order
+                  </button>
                 </div>
               </div>
             </div>
