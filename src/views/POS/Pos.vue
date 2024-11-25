@@ -90,7 +90,7 @@ const openConfirmOrderModal = () => {
 
   orderFormData.subtotal = parseFloat(cartStore.subtotal);
   orderFormData.pay_amt = parseFloat(cartStore.subtotal);
-  orderFormData.due_amt = parseFloat(cartStore.subtotal);
+  orderFormData.due_amt = parseFloat(cartStore.due_amt);
   orderFormData.total = parseFloat(cartStore.subtotal);
 };
 
