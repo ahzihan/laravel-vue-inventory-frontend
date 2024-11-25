@@ -11,6 +11,7 @@ import { Modal } from "bootstrap";
 import { useCartStore } from "@/stores/cart";
 import { useCustomerStore } from "@/stores/customer";
 import { useOrderStore } from "@/stores/order";
+import { ErrorMessage } from "vee-validate";
 
 /* All Instance*/
 const productStore = useProductStore();
@@ -63,6 +64,16 @@ const orderFormData = reactive({
   total: 0,
 });
 
+const schema = reactive({
+  cus_phone: "required|min:11|max:14",
+  payment_method: "required",
+  due_amt: "required",
+  pay_amt: "required",
+  subtotal: "required",
+  discount: "required",
+  total: "required",
+});
+
 /* All Methods */
 const openCartModal = (product) => {
   productStore.product = product;
@@ -72,6 +83,25 @@ const openCartModal = (product) => {
   cartFormData.product_name = product.name;
   cartFormData.price = product.sale_price;
   cartFormData.subtotal = product.sale_price * cartFormData.quantity;
+};
+
+const openConfirmOrderModal = () => {
+  orderModalObj.show();
+
+  orderFormData.subtotal = parseFloat(cartStore.subtotal);
+  orderFormData.pay_amt = parseFloat(cartStore.subtotal);
+  orderFormData.due_amt = parseFloat(cartStore.subtotal);
+  orderFormData.total = parseFloat(cartStore.subtotal);
+};
+
+const confirmOrder = () => {
+  console.log(orderFormData);
+  orderStore.storeOrder(orderFormData);
+  orderModalObj.hide();
+  resetOrderModal();
+
+  productStore.getProducts(1, productStore.dataLimit + 2);
+  cartStore.getAllCartItems();
 };
 
 const resetCartModal = () => {
@@ -97,7 +127,7 @@ const increaseQty = () => {
 };
 
 const AddToCart = (cartData) => {
-  console.log(cartData);
+  // console.log(cartData);
   cartStore.storeCart(cartData);
   cartModalObj.hide();
   resetCartModal();
@@ -105,7 +135,7 @@ const AddToCart = (cartData) => {
 };
 
 const RemoveCartItem = (product_id) => {
-  console.log(product_id);
+  // console.log(product_id);
   cartStore.removeCartItem(product_id);
 };
 
@@ -113,6 +143,7 @@ const RemoveCartItem = (product_id) => {
 
 onMounted(() => {
   cartModalObj = new Modal(cartModal.value);
+  orderModalObj = new Modal(orderModal.value);
   brandStore.getAllBrands();
   customerStore.getAllCustomers();
   categoryStore.getAllCategories();
@@ -208,7 +239,7 @@ watch(
           <div
             class="col-md-4"
             v-for="(product, index) in productStore.products"
-            :key="product.id"
+            :key="index"
           >
             <a
               href=""
@@ -340,7 +371,7 @@ watch(
                 <div class="d-flex justify-content-center align-items-center">
                   <button
                     class="btn btn-primary"
-                    @click.prevent="OpenConfirmOrderModal()"
+                    @click.prevent="openConfirmOrderModal()"
                   >
                     Confirm Order
                   </button>
@@ -492,6 +523,147 @@ watch(
             Add To Cart
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirm Modal -->
+
+  <div
+    class="modal fade"
+    id="confirmOrderModal"
+    tabindex="-1"
+    aria-labelledby="confirmOrderModalLabel"
+    aria-hidden="true"
+    ref="orderModal"
+  >
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <vee-form
+          :validation-schema="schema"
+          @submit="confirmOrder"
+          class="mt-2"
+        >
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmOrderModalLabel">
+              {{ productStore.product?.name }}
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="cus_phone" class="form-label">Customer Phone</label>
+                <vee-field
+                  type="tel"
+                  name="cus_phone"
+                  v-model="orderFormData.cus_phone"
+                  class="form-control"
+                  placeholder="Enter Phone Number"
+                />
+                <ErrorMessage class="text-danger" name="cus_phone" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="payment_method" class="form-label"
+                  >Payment Method</label
+                >
+                <vee-field
+                  as="select"
+                  name="payment_method"
+                  v-model="orderFormData.payment_method"
+                  class="form-select"
+                >
+                  <option value="">Select Method</option>
+                  <option
+                    :value="method"
+                    v-for="(method, index) in orderStore.payment_methods"
+                    :key="index"
+                  >
+                    {{ method }}
+                  </option>
+                </vee-field>
+                <ErrorMessage class="text-danger" name="payment_method" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="pay_amt" class="form-label"
+                  >Pay Amount (BDT):</label
+                >
+                <vee-field
+                  type="number"
+                  name="pay_amt"
+                  v-model="orderFormData.pay_amt"
+                  class="form-control"
+                  min="0"
+                />
+                <ErrorMessage class="text-danger" name="pay_amt" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="due_amt" class="form-label"
+                  >Due Amount (BDT):</label
+                >
+                <vee-field
+                  type="number"
+                  name="due_amt"
+                  v-model="orderFormData.due_amt"
+                  class="form-control"
+                  min="0"
+                />
+                <ErrorMessage class="text-danger" name="due_amt" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="subtotal" class="form-label">Subtotal (BDT):</label>
+                <vee-field
+                  type="number"
+                  name="subtotal"
+                  v-model="orderFormData.subtotal"
+                  class="form-control"
+                  min="0"
+                />
+                <ErrorMessage class="text-danger" name="subtotal" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="discount" class="form-label">Discount (BDT):</label>
+                <vee-field
+                  type="number"
+                  name="discount"
+                  v-model="orderFormData.discount"
+                  class="form-control"
+                  min="0"
+                />
+                <ErrorMessage class="text-danger" name="discount" />
+              </div>
+              <hr />
+              <div class="col-md-12">
+                <label for="total" class="form-label fw-bold"
+                  >GRAND TOTAL (BDT):</label
+                >
+                <vee-field
+                  type="number"
+                  name="total"
+                  v-model="orderFormData.total"
+                  class="form-control"
+                  min="0"
+                />
+                <ErrorMessage class="text-danger" name="total" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-primary">SUBMIT</button>
+          </div>
+        </vee-form>
       </div>
     </div>
   </div>
