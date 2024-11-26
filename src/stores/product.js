@@ -46,7 +46,7 @@ export const useProductStore = defineStore('product', {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get('/all-product');
-                console.log(data);
+                // console.log(data);
                 this.rawData = data;
                 this.products = data.data;
                 this.pagination.totalCount = data.metadata?.count;

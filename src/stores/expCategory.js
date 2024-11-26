@@ -36,7 +36,7 @@ export const useExpCategoryStore = defineStore('expCategory', {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get('/all-expense-categories');
-                console.log(data);
+                // console.log(data);
                 this.rawData = data;
                 this.expCategories = data.data;
                 this.pagination.totalCount = data.metadata?.count;

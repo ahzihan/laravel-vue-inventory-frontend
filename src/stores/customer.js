@@ -40,7 +40,7 @@ export const useCustomerStore = defineStore('customer', {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get('/all-customer');
-                console.log(data);
+                // console.log(data);
                 this.rawData = data;
                 this.customers = data.data;
                 this.pagination.totalCount = data.metadata?.count;

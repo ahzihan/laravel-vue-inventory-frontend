@@ -21,7 +21,7 @@ export const useDashboardStore = defineStore('dashboard', {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get('/dashboard-info');
-                console.log(data);
+                // console.log(data);
                 this.rawData = data;
                 this.dashboardInfo = data.data;
                 this.is_loading = false;

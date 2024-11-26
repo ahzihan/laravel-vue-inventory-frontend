@@ -38,7 +38,7 @@ export const useCategoryStore = defineStore('category', {
             this.is_loading = true;
             try {
                 const { data } = await inventoryAxiosClient.get('/all-category');
-                console.log(data);
+                // console.log(data);
                 this.rawData = data;
                 this.categories = data.data;
                 this.pagination.totalCount = data.metadata?.count;

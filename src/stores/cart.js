@@ -32,7 +32,7 @@ export const useCartStore = defineStore('cart', {
             this.is_loading = true;
             try {
                 const { data,status } = await inventoryAxiosClient.get('/carts');
-                console.log(data,status);
+                // console.log(data,status);
                 this.rawData = data;
                 this.carts = data.data;
                 this.subtotal=data.metadata.subtotal,

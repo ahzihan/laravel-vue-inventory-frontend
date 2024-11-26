@@ -564,7 +564,7 @@ watch(
                   name="cus_phone"
                   v-model="orderFormData.cus_phone"
                   class="form-control"
-                  placeholder="Enter Phone Number"
+                  placeholder="Please enter customer mobile number"
                 />
                 <ErrorMessage class="text-danger" name="cus_phone" />
               </div>
