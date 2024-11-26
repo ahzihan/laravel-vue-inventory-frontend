@@ -95,7 +95,7 @@ const openConfirmOrderModal = () => {
 };
 
 const confirmOrder = () => {
-  console.log(orderFormData);
+  // console.log(orderFormData);
   orderStore.storeOrder(orderFormData);
   orderModalObj.hide();
   resetOrderModal();

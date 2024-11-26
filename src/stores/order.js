@@ -81,7 +81,7 @@ export const useOrderStore = defineStore('order', {
             try {
                 
                 const { data } = await inventoryAxiosClient.post('/orders', formData);
-
+                console.log(data);
                 this.swal({
                     icon: 'success',
                     title: 'Order Inserted Successfully!',
