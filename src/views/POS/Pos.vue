@@ -55,8 +55,10 @@ const cartFormData = reactive({
 });
 
 const orderFormData = reactive({
+  cus_name: null,
   cus_phone: null,
   payment_method: "cash",
+  transaction_id: null,
   due_amt: 0,
   pay_amt: 0,
   subtotal: 0,
@@ -113,8 +115,10 @@ const resetCartModal = () => {
 };
 
 const resetOrderModal = () => {
+  orderFormData.cus_name = null;
   orderFormData.cus_phone = null;
   orderFormData.payment_method = "cash";
+  orderFormData.transaction_id = null;
   orderFormData.pay_amt = 0;
   orderFormData.due_amt = 0;
   orderFormData.subtotal = 0;
@@ -372,6 +376,7 @@ watch(
                   <button
                     class="btn btn-primary"
                     @click.prevent="openConfirmOrderModal"
+                    :disabled="cartStore.subtotal == 0"
                   >
                     Confirm Order
                   </button>
@@ -558,6 +563,17 @@ watch(
           <div class="modal-body">
             <div class="row">
               <div class="col-md-6 mb-3">
+                <label for="cus_name" class="form-label">Customer Name</label>
+                <vee-field
+                  type="tel"
+                  name="cus_name"
+                  v-model="orderFormData.cus_name"
+                  class="form-control"
+                  placeholder="Please enter customer name"
+                />
+                <ErrorMessage class="text-danger" name="cus_name" />
+              </div>
+              <div class="col-md-6 mb-3">
                 <label for="cus_phone" class="form-label">Customer Phone</label>
                 <vee-field
                   type="tel"
@@ -588,6 +604,22 @@ watch(
                   </option>
                 </vee-field>
                 <ErrorMessage class="text-danger" name="payment_method" />
+              </div>
+              <div
+                class="col-md-6 mb-3"
+                v-if="orderFormData.payment_method != 'cash'"
+              >
+                <label for="transaction_id" class="form-label"
+                  >Transaction ID</label
+                >
+                <vee-field
+                  type="text"
+                  name="transaction_id"
+                  v-model="orderFormData.transaction_id"
+                  class="form-control"
+                  placeholder="Please enter transaction id"
+                />
+                <ErrorMessage class="text-danger" name="transaction_id" />
               </div>
               <div class="col-md-6 mb-3">
                 <label for="pay_amt" class="form-label"

@@ -58,7 +58,7 @@ export const useOrderStore = defineStore('order', {
                         search: search,
                     }
                 });
-                // console.log(data);
+                console.log(data.data);
                 this.rawData = data.data;
                 this.orders = data.data?.data;
                 this.pagination.current_page = data.data?.current_page;

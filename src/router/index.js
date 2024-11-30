@@ -68,6 +68,10 @@ const router = createRouter({
         { path: '/salary/create', name: 'salary-create', component: () => import('@/views/Salary/Create.vue')},
         { path: '/salary/edit/:id', name: 'salary-edit', component: () => import('@/views/Salary/Edit.vue') },
 
+        /** Brand Route */
+        { path: '/order', name: 'order-index', component: () => import('@/views/Order/Index.vue')},
+        { path: '/order/show/:id', name: 'order-show', component: () => import('@/views/Order/Show.vue') },
+
       ],
     },
 

@@ -128,6 +128,25 @@
                   >
                 </div>
               </div>
+              <div class="dropdown">
+                <a
+                  class="dropdown-item dropdown-toggle arrow-none"
+                  href="#"
+                  id="topnav-order"
+                  role="button"
+                >
+                  <span data-key="t-order">Sale History</span>
+                  <div class="arrow-down"></div>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="topnav-order">
+                  <router-link
+                    :to="{ name: 'order-index' }"
+                    class="dropdown-item"
+                    data-key="t-p-list"
+                    >Sale List</router-link
+                  >
+                </div>
+              </div>
 
               <div class="dropdown">
                 <a
