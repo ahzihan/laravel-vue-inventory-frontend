@@ -85,7 +85,7 @@ export const useOrderStore = defineStore('order', {
                 this.swal({
                     icon: 'success',
                     title: 'Order Inserted Successfully!',
-                    timer: 1000,
+                    timer: 2000,
                 });
                 this.is_loading = false;
             } catch (error) {
@@ -93,7 +93,7 @@ export const useOrderStore = defineStore('order', {
                 this.swal({
                     icon: 'error',
                     title: 'Something went wrong!',
-                    timer: 1000,
+                    timer: 2000,
                     text: this.errors?.message
                 });
                 this.is_loading = false;

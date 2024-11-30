@@ -109,7 +109,8 @@ export const useCartStore = defineStore('cart', {
                 this.swal({
                     title: "Increase!",
                     text: "Item has been increase.",
-                    icon: "success"
+                    icon: "success",
+                    timer: 600,
                 });
                 this.getAllCartItems();
                 this.is_loading = false;
@@ -118,7 +119,7 @@ export const useCartStore = defineStore('cart', {
                 this.swal({
                     icon: 'error',
                     title: 'Something went wrong!',
-                    timer: 1000,
+                    timer: 600,
                     text: this.errors?.message
                 });
                 this.is_loading = false;
@@ -133,7 +134,8 @@ export const useCartStore = defineStore('cart', {
                 this.swal({
                     title: "Decrease!",
                     text: "Item has been decrease.",
-                    icon: "success"
+                    icon: "success",
+                    timer: 600,
                 });
                 this.getAllCartItems();
                 this.is_loading = false;
@@ -142,7 +144,7 @@ export const useCartStore = defineStore('cart', {
                 this.swal({
                     icon: 'error',
                     title: 'Something went wrong!',
-                    timer: 1000,
+                    timer: 600,
                     text: this.errors?.message
                 });
                 this.is_loading = false;
