@@ -88,7 +88,6 @@ export const useOrderStore = defineStore('order', {
                     timer: 1000,
                 });
                 this.is_loading = false;
-                this.router.push({ name: 'order-index' });
             } catch (error) {
                 this.errors = error.response?.data;
                 this.swal({
