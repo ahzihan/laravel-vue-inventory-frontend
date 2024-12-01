@@ -85,9 +85,10 @@ watch(
                           <th>Customer Name</th>
                           <th>Bill Amt.</th>
                           <th>Payment Method</th>
-                          <th>Payment Amt.</th>
+                          <th>Dis. Amt.</th>
+                          <th>Pay Amt.</th>
                           <th>Due Amt.</th>
-                          <th>Subtotal</th>
+                          <th>Total</th>
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -109,6 +110,7 @@ watch(
                           <td>{{ order.customer?.name }}</td>
                           <td>{{ order.total }}</td>
                           <td>{{ order.payment_method }}</td>
+                          <td>{{ order.dis_amt }}</td>
                           <td>{{ order.pay_amt }}</td>
                           <td>{{ order.due_amt }}</td>
                           <td>{{ order.subtotal }}</td>

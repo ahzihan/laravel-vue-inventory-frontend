@@ -61,8 +61,11 @@ const orderFormData = reactive({
   transaction_id: null,
   due_amt: 0,
   pay_amt: 0,
+  rtn_amt: 0,
   subtotal: 0,
   discount: 0,
+  dis_amt: 0,
+  after_dis_amt: 0,
   total: 0,
 });
 
@@ -72,7 +75,6 @@ const schema = reactive({
   due_amt: "required",
   pay_amt: "required",
   subtotal: "required",
-  discount: "required",
   total: "required",
 });
 
@@ -91,8 +93,9 @@ const openConfirmOrderModal = () => {
   orderModalObj.show();
 
   orderFormData.subtotal = parseFloat(cartStore.subtotal);
-  orderFormData.pay_amt = parseFloat(cartStore.subtotal);
+  orderFormData.pay_amt = parseFloat(orderFormData.total);
   orderFormData.due_amt = parseFloat(cartStore.due_amt);
+  orderFormData.rtn_amt = parseFloat(orderFormData.rtn_amt);
   orderFormData.total = parseFloat(cartStore.subtotal);
 };
 
@@ -105,6 +108,26 @@ const confirmOrder = () => {
   productStore.getProducts(1, productStore.dataLimit + 2);
   cartStore.getAllCartItems();
 };
+
+const getDueAmt = () => {
+  let dueAmt = 0;
+  dueAmt =
+    orderFormData.subtotal - (orderFormData.pay_amt + orderFormData.dis_amt);
+  if (dueAmt < 0) {
+    orderFormData.rtn_amt = dueAmt;
+    orderFormData.due_amt = 0;
+  } else {
+    orderFormData.due_amt = dueAmt;
+  }
+};
+
+function getTotal() {
+  const discount = (orderFormData.subtotal * orderFormData.discount) / 100;
+  orderFormData.dis_amt = discount;
+  orderFormData.total = orderFormData.subtotal - discount;
+  orderFormData.after_dis_amt = orderFormData.total;
+  return orderFormData.total;
+}
 
 const resetCartModal = () => {
   cartFormData.product_id = null;
@@ -285,13 +308,13 @@ watch(
                   <table class="table table-bordered table-striped">
                     <thead>
                       <tr class="bg-primary text-white">
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Code</th>
-                        <th scope="col">Sale Price</th>
-                        <th scope="col" style="width: 120px">Qty</th>
-                        <th scope="col">Subtotal</th>
-                        <th scope="col"><i class="fas fa-edit"></i></th>
+                        <td scope="col">#</td>
+                        <td scope="col">Name</td>
+                        <td scope="col">Code</td>
+                        <td scope="col">Sale Price</td>
+                        <td scope="col" style="width: 120px">Qty</td>
+                        <td scope="col">Subtotal</td>
+                        <td scope="col"><i class="fas fa-edit"></i></td>
                       </tr>
                     </thead>
                     <tbody>
@@ -542,7 +565,7 @@ watch(
     aria-hidden="true"
     ref="orderModal"
   >
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <vee-form
           :validation-schema="schema"
@@ -562,127 +585,153 @@ watch(
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="cus_name" class="form-label">Customer Name</label>
-                <vee-field
-                  type="tel"
-                  name="cus_name"
-                  v-model="orderFormData.cus_name"
-                  class="form-control"
-                  placeholder="Please enter customer name"
-                />
-                <ErrorMessage class="text-danger" name="cus_name" />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="cus_phone" class="form-label">Customer Phone</label>
-                <vee-field
-                  type="tel"
-                  name="cus_phone"
-                  v-model="orderFormData.cus_phone"
-                  class="form-control"
-                  placeholder="Please enter customer mobile number"
-                />
-                <ErrorMessage class="text-danger" name="cus_phone" />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="payment_method" class="form-label"
-                  >Payment Method</label
-                >
-                <vee-field
-                  as="select"
-                  name="payment_method"
-                  v-model="orderFormData.payment_method"
-                  class="form-select"
-                >
-                  <option value="">Select Method</option>
-                  <option
-                    :value="method"
-                    v-for="(method, index) in orderStore.payment_methods"
-                    :key="index"
-                  >
-                    {{ method }}
-                  </option>
-                </vee-field>
-                <ErrorMessage class="text-danger" name="payment_method" />
-              </div>
-              <div
-                class="col-md-6 mb-3"
-                v-if="orderFormData.payment_method != 'cash'"
-              >
-                <label for="transaction_id" class="form-label"
-                  >Transaction ID</label
-                >
-                <vee-field
-                  type="text"
-                  name="transaction_id"
-                  v-model="orderFormData.transaction_id"
-                  class="form-control"
-                  placeholder="Please enter transaction id"
-                />
-                <ErrorMessage class="text-danger" name="transaction_id" />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="pay_amt" class="form-label"
-                  >Pay Amount (BDT):</label
-                >
-                <vee-field
-                  type="number"
-                  name="pay_amt"
-                  v-model="orderFormData.pay_amt"
-                  class="form-control"
-                  min="0"
-                />
-                <ErrorMessage class="text-danger" name="pay_amt" />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="due_amt" class="form-label"
-                  >Due Amount (BDT):</label
-                >
-                <vee-field
-                  type="number"
-                  name="due_amt"
-                  v-model="orderFormData.due_amt"
-                  class="form-control"
-                  min="0"
-                />
-                <ErrorMessage class="text-danger" name="due_amt" />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="subtotal" class="form-label">Subtotal (BDT):</label>
-                <vee-field
-                  type="number"
-                  name="subtotal"
-                  v-model="orderFormData.subtotal"
-                  class="form-control"
-                  min="0"
-                />
-                <ErrorMessage class="text-danger" name="subtotal" />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="discount" class="form-label">Discount (BDT):</label>
-                <vee-field
-                  type="number"
-                  name="discount"
-                  v-model="orderFormData.discount"
-                  class="form-control"
-                  min="0"
-                />
-                <ErrorMessage class="text-danger" name="discount" />
-              </div>
-              <hr />
-              <div class="col-md-12">
-                <label for="total" class="form-label fw-bold"
-                  >GRAND TOTAL (BDT):</label
-                >
-                <vee-field
-                  type="number"
-                  name="total"
-                  v-model="orderFormData.total"
-                  class="form-control"
-                  min="0"
-                />
-                <ErrorMessage class="text-danger" name="total" />
-              </div>
+              <table class="table p-3">
+                <tr>
+                  <td>Customer Name</td>
+                  <td colspan="2">
+                    <vee-field
+                      type="tel"
+                      name="cus_name"
+                      v-model="orderFormData.cus_name"
+                      class="form-control form-control-sm p-2"
+                      placeholder="Please enter customer name"
+                    />
+                    <ErrorMessage class="text-danger" name="cus_name" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Customer Phone</td>
+                  <td colspan="2">
+                    <vee-field
+                      type="tel"
+                      name="cus_phone"
+                      v-model="orderFormData.cus_phone"
+                      class="form-control form-control-sm p-2"
+                      placeholder="Please enter customer mobile number"
+                    />
+                    <ErrorMessage class="text-danger" name="cus_phone" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Payment Method</td>
+                  <td colspan="2">
+                    <vee-field
+                      as="select"
+                      name="payment_method"
+                      v-model="orderFormData.payment_method"
+                      class="form-select form-select-sm p-2"
+                    >
+                      <option value="">Select Method</option>
+                      <option
+                        :value="method"
+                        v-for="(method, index) in orderStore.payment_methods"
+                        :key="index"
+                      >
+                        {{ method }}
+                      </option>
+                    </vee-field>
+                    <ErrorMessage class="text-danger" name="payment_method" />
+                  </td>
+                </tr>
+                <tr v-if="orderFormData.payment_method != 'cash'">
+                  <td>Transaction ID</td>
+                  <td colspan="2">
+                    <vee-field
+                      type="text"
+                      name="transaction_id"
+                      v-model="orderFormData.transaction_id"
+                      class="form-control form-control-sm p-2"
+                      placeholder="Please enter transaction id"
+                    />
+                    <ErrorMessage class="text-danger" name="transaction_id" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Total Bill (BDT):</td>
+                  <td colspan="2">
+                    <vee-field
+                      type="number"
+                      name="subtotal"
+                      v-model="orderFormData.subtotal"
+                      class="form-control form-control-sm p-2 text-end"
+                      min="0"
+                      readonly
+                    />
+                    <ErrorMessage class="text-danger" name="subtotal" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Discount % (BDT):</td>
+                  <td>
+                    <vee-field
+                      type="number"
+                      name="discount"
+                      v-model="orderFormData.discount"
+                      class="form-control form-control-sm p-2"
+                      min="0"
+                      style="width: 100px"
+                      placeholder="% Discount"
+                    />
+                    <ErrorMessage class="text-danger" name="discount" />
+                  </td>
+                  <td>{{ orderFormData.dis_amt }}</td>
+                </tr>
+                <tr>
+                  <td>After Discount:</td>
+                  <td colspan="2" class="text-end">
+                    <span class="p-3">{{ orderFormData.after_dis_amt }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Pay Amount (BDT):</td>
+                  <td colspan="2">
+                    <vee-field
+                      type="number"
+                      name="pay_amt"
+                      v-model="orderFormData.pay_amt"
+                      class="form-control form-control-sm p-2 text-end"
+                      min="0"
+                    />
+                    <ErrorMessage class="text-danger" name="pay_amt" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Due Amount (BDT):</td>
+                  <td colspan="2">
+                    <vee-field
+                      type="number"
+                      name="due_amt"
+                      v-model="orderFormData.due_amt"
+                      :value="getDueAmt()"
+                      class="form-control form-control-sm p-2 text-end"
+                      min="0"
+                      readonly
+                    />
+                    <ErrorMessage class="text-danger" name="due_amt" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>GRAND TOTAL (BDT):</td>
+                  <td colspan="2">
+                    <vee-field
+                      type="number"
+                      name="total"
+                      v-model="orderFormData.total"
+                      :value="getTotal()"
+                      class="form-control form-control-sm p-2 text-end"
+                      min="0"
+                      readonly
+                    />
+                    <ErrorMessage class="text-danger" name="total" />
+                  </td>
+                </tr>
+                <tr v-if="orderFormData.rtn_amt > 0">
+                  <td>Return Amt</td>
+                  <td colspan="2" class="text-end">
+                    {{ orderFormData.rtn_amt }}
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
           <div class="modal-footer">
