@@ -7,7 +7,6 @@ import { useSalaryStore } from "@/stores/salary";
 import { useStaffStore } from "@/stores/staff";
 import { getMonths, getYears } from "@/helpers/helper";
 
-
 /* All Instance*/
 const salaryStore = useSalaryStore();
 const staffStore = useStaffStore();
@@ -75,7 +74,6 @@ onMounted(() => {
               <div class="row">
                 <vee-form :validation-schema="schema" @submit="saveSalary">
                   <div class="row">
-                    
                     <div class="col-md-6 mb-4">
                       <label for="date" class="form-label">Date</label>
                       <vee-field
@@ -101,7 +99,7 @@ onMounted(() => {
                         <option value="">Select Staff</option>
                         <option
                           :value="staff.id"
-                          v-for="(staff, index) in staffStore.staffs"
+                          v-for="staff in staffStore.staffs"
                           :key="staff.id"
                         >
                           {{ staff.name }}
@@ -184,7 +182,6 @@ onMounted(() => {
                       </vee-field>
                       <ErrorMessage class="text-danger" name="type" />
                     </div>
-
                   </div>
                   <div
                     class="d-flex justify-content-end align-items-center mt-3"
